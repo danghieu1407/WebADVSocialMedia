@@ -1,0 +1,30 @@
+{
+  "name": "webadvsocialmedia",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --inspect index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danghieu1407/WebADVSocialMedia.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danghieu1407/WebADVSocialMedia/issues"
+  },
+  "homepage": "https://github.com/danghieu1407/WebADVSocialMedia#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "nodemon": "^2.0.15",
+    "passport": "^0.5.1",
+    "passport-google-oauth20": "^2.0.0"
+  }
+}
