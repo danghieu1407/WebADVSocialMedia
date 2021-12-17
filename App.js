@@ -1,6 +1,8 @@
 var express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 var app = express();
+const db = require('./db')
+
 
 app.use(express.static("public"));
 // set the view engine to ejs
