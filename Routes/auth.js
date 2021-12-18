@@ -11,8 +11,6 @@ passport.use(new GoogleStrategy({
   function (accessToken, refreshToken, profile, done) {
     var filter1 = /^([a-zA-Z0-9_\.\-])+\@student.tdtu.edu.vn+$/;
     var filter2 = /^([a-zA-Z0-9_\.\-])+\@tdtu.edu.vn+$/;
-
-
     const authId = 'google:' + profile.id;
     User.findOne({ 'authId': authId })
       .then(user => {
@@ -21,16 +19,21 @@ passport.use(new GoogleStrategy({
         var Check2 = filter2.test(profile.emails[0].value);
 
         if (Check1 || Check2) {
+          
           new User({
             authId: authId,
             name: profile.displayName,
             email: profile.emails[0].value,
             created: new Date(),
+            avatar: profile.photos[0].value,
+            Class : "XXXXXXX",
+            Faculty:  "XXXXXXX",
             role: 'student',
           }).save()
             .then(user => done(null, user))
             .catch(err => done(err, null));
         }
+      
       })
       .catch(err => {
         if (err) return done(err, null);
@@ -53,6 +56,6 @@ router.get('/google', passport.authenticate('google', {
   ]
 }));
 router.get('/google/callback',
-  passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login' }));
+  passport.authenticate('google', { successRedirect: '/', failureRedirect: '/user/login' }));
 
 module.exports = router;

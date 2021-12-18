@@ -3,8 +3,7 @@ var express           = require('express');
 var app               = express();
 var authRouter        = require('./Routes/auth');
 var UserRouter        = require('./Routes/user');
-var IndexRouter        = require('./Routes/index');
-
+var IndexRouter       = require('./Routes/index');
 
 const expressLayouts  = require('express-ejs-layouts');
 app.set("layout","./Layout/layout");
@@ -18,9 +17,6 @@ app.use("",IndexRouter);
 app.use('/auth', authRouter);
 app.use("/user",UserRouter);
 
-
-
-
 const port = process.env.PORT || 8080;
 app.listen(port);
-console.log("Server started on port " + port);
+console.log("Server started on port" + port);
