@@ -16,9 +16,7 @@ router.post("/login", function (req, res) {
 })
 
 
-router.get("/UserProfile", function (req, res) {
-    res.render('./Pages/UserProfile',{ layout: `./Layout/layout` })
-})
+
 
 
 module.exports = router;

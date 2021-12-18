@@ -9,17 +9,19 @@ router.use(session({
 }));
 router.use(passport.initialize());
 router.use(passport.session());
+var UserTDT = require('../Models/UserModel')
 
 
 
 router.get('/', isLoggedIn, (req, res, next) => {
-    console.log(req.user);
-    res.render('./Pages/index', { user: req.user});
+    userTDTU = req.user;
+    console.log(userTDTU);
+    res.render('./Pages/index', { user: userTDTU });
 });
 
 
 function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated())  
+    if (req.isAuthenticated())
         return next();
     res.redirect('/user/login');
 }
@@ -28,6 +30,29 @@ function isLoggedIn(req, res, next) {
 router.get("/about", function (req, res) {
     res.render("./Pages/about");
 })
+
+
+router.get("/UserProfile", isLoggedIn, (req, res, next) => {
+    res.render('./Pages/UserProfile', { user: userTDTU });
+});
+
+router.post("/UserProfile", isLoggedIn, (req, res, next) => {
+    var { Class, name, Faculty } = req.body;
+    authId = req.user.authId;
+    query = { authId: authId };
+    var data = { name: name, Class: Class, Faculty: Faculty };
+    UserTDT.findOneAndUpdate(query, { $set: data }, { new: true }, (err, doc) => {
+        if (err) {
+            console.log("Something wrong when updating data!");
+        }
+
+        console.log(doc);
+    });
+
+res.render('./Pages/UserProfile', { user: userTDTU });
+});
+
+
 
 
 

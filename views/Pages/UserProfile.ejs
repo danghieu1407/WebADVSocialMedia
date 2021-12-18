@@ -1,27 +1,41 @@
 <div class="col-md-6">
-    <h1 class= "text-center">Thông tin cá nhân</h1>
+    <h1 class="text-center">Thông tin cá nhân</h1>
     <table class="table">
-        <form>
+        <form method="post" action="/UserProfile">
             <thead>
                 <tr>
-                    <th>Ảnh Đại Diện</th>
+                    <td>Ảnh Đại Diện</td>
+                    <div class="sjfsj">
+                        <img src="<%= user.avatar%>" alt="">
+                    </div>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
                         Tên
-                        <input type="text" class="form-control" id="Name" aria-describedby="emailHelp" placeholder="Nhập Tên">
+                        <input value="<%= user.name%>" name="name" type="text"
+                        class="form-control" id="Name"
+                        placeholder="Nhập Tên">
                     </td>
                     <td>
                         Lớp
-                        <input type="text" class="form-control" id="Class" aria-describedby="emailHelp" placeholder="Nhập Lớp">
+                        <input value="<%= user.Class%>" name="Class" type="text"
+                        class="form-control" id="Class"
+                        placeholder="Nhập Lớp">
                     </td>
                 </tr>
                 <tr>
                     <td>
                         Khoa
-                        <input type="text" class="form-control" id="Name" aria-describedby="emailHelp" placeholder="Nhập Khoa">
+                        <input value="<%= user.Faculty%>" name="Faculty"
+                        type="text" class="form-control" id="Name"
+                        placeholder="Nhập Khoa">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="submit" class="form-control">
                     </td>
                 </tr>
             </tbody>
