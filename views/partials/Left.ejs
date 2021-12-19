@@ -14,5 +14,13 @@
                 View My Profile
             </a>
         </div>
+
+        <% if( user.role == "admin") {%>
+            <div class="text-center">
+                <a href="/about" class="font-weight-bold text-decoration-none text-center">
+                   Manager Faculty
+                </a>
+            </div>
+        <% }%>
     </div>
 </div>

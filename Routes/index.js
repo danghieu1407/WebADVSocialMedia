@@ -27,7 +27,7 @@ function isLoggedIn(req, res, next) {
 
 
 router.get("/about", function (req, res) {
-    res.render("./Pages/about");
+    res.render("./Pages/about", { user: userTDTU });
 })
 
 
@@ -50,6 +50,7 @@ router.post("/UserProfile", isLoggedIn,  (req, res, next) => {
     })
     
 });
+
 
 
 
