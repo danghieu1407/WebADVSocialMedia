@@ -4,13 +4,15 @@ var app               = express();
 var authRouter        = require('./Routes/auth');
 var UserRouter        = require('./Routes/user');
 var IndexRouter       = require('./Routes/index');
+const bp = require('body-parser')
 
 const expressLayouts  = require('express-ejs-layouts');
 app.set("layout","./Layout/layout");
 app.set('view engine', 'ejs');
 app.set("layout extractScripts", true)
 
-
+app.use(bp.urlencoded({ extended: false }))
+app.use(bp.json())
 app.use(express.static("public"));
 app.use(expressLayouts);
 app.use("",IndexRouter);

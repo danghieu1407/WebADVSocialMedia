@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db')
-const bodyParser = require('body-parser');
 
-router.use(bodyParser.urlencoded({ extended: false }))
-router.use(bodyParser.json())
+const fs = require('fs');
+
 
 
 router.get('/login', (req, res, next) => {
@@ -12,7 +11,7 @@ router.get('/login', (req, res, next) => {
 })
 
 router.post("/login", function (req, res) {
-    res.send("T xu li viec  dang nhap")
+     res.send("T xu li viec  dang nhap")
 })
 
 

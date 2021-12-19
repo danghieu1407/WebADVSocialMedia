@@ -10,12 +10,11 @@ router.use(session({
 router.use(passport.initialize());
 router.use(passport.session());
 var UserTDT = require('../Models/UserModel')
-
+let userTDTU;
 
 
 router.get('/', isLoggedIn, (req, res, next) => {
     userTDTU = req.user;
-    console.log(userTDTU);
     res.render('./Pages/index', { user: userTDTU });
 });
 
@@ -36,20 +35,20 @@ router.get("/UserProfile", isLoggedIn, (req, res, next) => {
     res.render('./Pages/UserProfile', { user: userTDTU });
 });
 
-router.post("/UserProfile", isLoggedIn, (req, res, next) => {
-    var { Class, name, Faculty } = req.body;
-    authId = req.user.authId;
-    query = { authId: authId };
+router.post("/UserProfile", isLoggedIn,  (req, res, next) => {
+    const { name, Class, Faculty } = req.body;
+    query = { authId: req.user.authId };
     var data = { name: name, Class: Class, Faculty: Faculty };
-    UserTDT.findOneAndUpdate(query, { $set: data }, { new: true }, (err, doc) => {
+    userTemp =  UserTDT.findOneAndUpdate(query, { $set: data }, { new: true }, (err, doc) => 
+    {
         if (err) {
             console.log("Something wrong when updating data!");
         }
-
-        console.log(doc);
-    });
-
-res.render('./Pages/UserProfile', { user: userTDTU });
+        userTDTU = doc;
+        console.log(userTDTU);
+        res.render('./Pages/UserProfile', { user: doc });
+    })
+    
 });
 
 

@@ -1,45 +1,65 @@
 <div class="col-md-6">
-    <h1 class="text-center">Thông tin cá nhân</h1>
-    <table class="table">
-        <form method="post" action="/UserProfile">
-            <thead>
-                <tr>
-                    <td>Ảnh Đại Diện</td>
-                    <div class="sjfsj">
-                        <img src="<%= user.avatar%>" alt="">
-                    </div>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        Tên
-                        <input value="<%= user.name%>" name="name" type="text"
-                        class="form-control" id="Name"
-                        placeholder="Nhập Tên">
-                    </td>
-                    <td>
-                        Lớp
-                        <input value="<%= user.Class%>" name="Class" type="text"
-                        class="form-control" id="Class"
-                        placeholder="Nhập Lớp">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Khoa
-                        <input value="<%= user.Faculty%>" name="Faculty"
-                        type="text" class="form-control" id="Name"
-                        placeholder="Nhập Khoa">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="submit" class="form-control">
-                    </td>
-                </tr>
-            </tbody>
-        </form>
-    </table>
+    <div class="box1">
+        <h1 class="text-center">Thông tin cá nhân</h1>
+        <table class="table">
+            <form method="post" id="FormUserProfile">
+                <thead>
+                    <tr>
+                        <td>Ảnh Đại Diện</td>
+                        <div class="sjfsj">
+                            <img src="<%= user.avatar%>" alt="">
+                        </div>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Tên
+                            <input value="<%= user.name%>" name="name" type="text" class="form-control" id="Name"
+                                placeholder="Nhập Tên">
+                        </td>
+                        <td>
+                            Lớp
+                            <input value="<%= user.Class%>" name="Class" type="text" class="form-control" id="Class"
+                                placeholder="Nhập Lớp">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Khoa
+                            <input value="<%= user.Faculty%>" name="Faculty" type="text" class="form-control" id="Faculty"
+                                placeholder="Nhập Khoa">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="submit" class="form-control">
+                        </td>
+                    </tr>
+                </tbody>
+            </form>
+        </table>
+    </div>
 
 </div>
+
+<script>
+    $(document).ready(() => {
+    $("#FormUserProfile").on("submit", (e) => {
+        e.preventDefault();
+        let nameValue = $("#Name").val();
+        let ClassValue = $("#Class").val();
+        let FacultyValue = $("#Faculty").val();
+
+        $.ajax({
+            url: "/UserProfile",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ nameValue: nameValue, ClassValue: ClassValue, FacultyValue: FacultyValue }),
+            success: function (res) {
+                console.log(res);
+            }
+        })
+    })
+});
+</script>
