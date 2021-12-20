@@ -6,6 +6,7 @@ var session = require('express-session');
 var passport = require('passport');
 const http = require('http');
 const socketio = require('socket.io');
+const db = require('../db')
 
 router.use(session({
     resave: false,
@@ -16,6 +17,8 @@ router.use(session({
 
 router.use(passport.initialize());
 router.use(passport.session());
+
+
 router.use(bodyParser.json())
 
 
@@ -53,12 +56,26 @@ router.post('/', isLoggedIn, (req, res, next) => {
        create_at: new Date(),
        update_at:  new Date()
       }).save()
-        .then(user => done(null, user))
-        .catch(err => done(err, null));
     
     result={authId:userTDTU.authId,content:req.body.content,user:userTDTU};
     res.send(result)
 });
+
+
+
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated())
+        return next();
+    res.redirect('/user/login');
+}
+
+
+router.get("/about", function (req, res) {
+    res.render("./Pages/about", { user: userTDTU });
+})
+
+
+
 
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
     res.render('./Pages/UserProfile', { user: userTDTU });
@@ -80,9 +97,35 @@ router.post("/UserProfile", isLoggedIn, (req, res, next) => {
     })
 
 });
+router.get('/adminmanager', isLoggedIn , (req , res)=>{
+    res.render('./Pages/adminmanager', { user: userTDTU});
+})
 
-
-
+router.post('/adminmanager', isLoggedIn, (req,res)=>{
+    const {name} = req.body
+    console.log(name)
+    const newAccount =  new UserTDT({
+        name: req.body.name
+       
+    })
+    newAccount.save((err) =>{
+        if(err){
+            res.json({
+                result: "Failed",
+                data: {},
+                message: `Error is : ${err}`
+            })
+        }
+        else{
+            res.json({
+                result: "ok",
+                name:req.body.name
+                
+               
+            })
+        }
+    })
+})
 
 
 function isLoggedIn(req, res, next) {
