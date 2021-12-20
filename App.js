@@ -2,6 +2,7 @@ require("dotenv").config();
 var express           = require('express');
 var bodyParser        = require('body-parser')
 var app               = express();
+
 var authRouter        = require('./Routes/auth');
 var UserRouter        = require('./Routes/user');
 var IndexRouter       = require('./Routes/index');
