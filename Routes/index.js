@@ -12,9 +12,7 @@ router.use(session({
 router.use(passport.initialize());
 router.use(passport.session());
 
-// router.get('/ajax',function (req, res){
-//     res.render('./Pages/index', {qoute: "AJAX la so 1"})
-// })
+
 router.use(bodyParser.json())
 var UserTDT = require('../Models/UserModel')
 let userTDTU;
