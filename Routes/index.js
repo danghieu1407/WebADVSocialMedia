@@ -1,4 +1,6 @@
+const { response } = require('express');
 const express = require('express');
+const bodyParser = require('body-parser')
 const router = express.Router();
 var session = require('express-session');
 var passport = require('passport');
@@ -9,6 +11,11 @@ router.use(session({
 }));
 router.use(passport.initialize());
 router.use(passport.session());
+
+// router.get('/ajax',function (req, res){
+//     res.render('./Pages/index', {qoute: "AJAX la so 1"})
+// })
+router.use(bodyParser.json())
 var UserTDT = require('../Models/UserModel')
 let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
 
@@ -17,6 +24,8 @@ router.get('/', isLoggedIn, (req, res, next) => {
     userTDTU = req.user;
     res.render('./Pages/index', { user: userTDTU });
 });
+
+
 
 
 function isLoggedIn(req, res, next) {
@@ -29,6 +38,8 @@ function isLoggedIn(req, res, next) {
 router.get("/about", function (req, res) {
     res.render("./Pages/about", { user: userTDTU });
 })
+// router.use(bodyParser.json())
+
 
 
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
