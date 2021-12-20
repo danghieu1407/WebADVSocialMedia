@@ -10,7 +10,7 @@ router.use(session({
 router.use(passport.initialize());
 router.use(passport.session());
 var UserTDT = require('../Models/UserModel')
-let userTDTU;
+let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
 
 
 router.get('/', isLoggedIn, (req, res, next) => {
@@ -35,6 +35,7 @@ router.get("/UserProfile", isLoggedIn, (req, res, next) => {
     res.render('./Pages/UserProfile', { user: userTDTU });
 });
 
+
 router.post("/UserProfile", isLoggedIn,  (req, res, next) => {
     const { name, Class, Faculty } = req.body;
     query = { authId: req.user.authId };
@@ -46,6 +47,7 @@ router.post("/UserProfile", isLoggedIn,  (req, res, next) => {
         }
         userTDTU = doc;
         console.log(userTDTU);
+        
         res.render('./Pages/UserProfile', { user: doc });
     })
     

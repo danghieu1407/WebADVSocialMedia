@@ -27,8 +27,38 @@
                     <tr>
                         <td>
                             Khoa
-                            <input value="<%= user.Faculty%>" name="Faculty" type="text" class="form-control" id="Faculty"
-                                placeholder="Nhập Khoa">
+                            <select name="Faculty" id="Class" class="form-control">
+                                <%if( user.Faculty=="Law"){%>
+                                    <option value="Law" selected>Luật</option>
+                                <%}else if( user.Faculty=="MTCN"){%>
+                                    <option value="MTCN" selected>Mỹ Thuật-Công Nghiệp</option>
+                                <%}else if( user.Faculty=="Electric"){%>
+                                    <option value="Electric"selected>Điện - Điện Tử</option>
+                                <%}else if( user.Faculty=="TCNH"){%>
+                                    <option value="TCNH"selected>Tài Chính Ngân Hàng</option>
+                                <%}else if( user.Faculty=="CNTT"){%>
+                                    <option value="CNTT"selected>Công Nghệ Thông Tin</option>
+                                <%}else if( user.Faculty=="QTKD"){%>
+                                    <option value="QTKD"selected>Quản Trị Kinh Doanh</option>
+                                <%}else if( user.Faculty=="BGLD"){%>
+                                    <option value="BHLD"selected>Môi trường và bảo hộ lao động</option>
+                                <%}else if( user.Faculty=="LDCD"){%>
+                                    <option value="LDCD"selected>Lao động công đoàn</option>
+                                <%}else if( user.Faculty=="GDQT"){%>
+                                    <option value="GDQT"selected>Giáo dục quốc tế</option>
+                                <%}else{%>
+                                    <option value=""selected>Chọn Khoa</option>
+                                <%}%>                                                         
+                                        <option value="Law">Luật</option>
+                                        <option value="MTCN">Mỹ Thuật-Công Nghiệp</option>
+                                        <option value="Electric">Điện - Điện Tử</option>
+                                        <option value="CNTT">Công Nghệ Thông Tin</option>
+                                        <option value="QTKD">Quản Trị Kinh Doanh</option>
+                                        <option value="BHLD">Môi trường và bảo hộ lao động</option>
+                                        <option value="LDCD">Lao động công đoàn</option>
+                                        <option value="TCNH">Tài Chính Ngân Hàng</option>
+                                        <option value="GDQT">Giáo dục quốc tế</option>
+                            </select>
                         </td>
                     </tr>
                     <tr>
@@ -42,4 +72,3 @@
     </div>
 
 </div>
-
