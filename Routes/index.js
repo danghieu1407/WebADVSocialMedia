@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const router = express.Router();
 var session = require('express-session');
 var passport = require('passport');
+const db = require('../db')
+
 router.use(session({
     resave: false,
     saveUninitialized: true,
@@ -36,7 +38,7 @@ function isLoggedIn(req, res, next) {
 router.get("/about", function (req, res) {
     res.render("./Pages/about", { user: userTDTU });
 })
-// router.use(bodyParser.json())
+
 
 
 
@@ -62,9 +64,35 @@ router.post("/UserProfile", isLoggedIn,  (req, res, next) => {
     
 });
 
+router.get('/adminmanager', isLoggedIn , (req , res)=>{
+    res.render('./Pages/adminmanager', { user: userTDTU});
+})
 
-
-
+router.post('/adminmanager', isLoggedIn, (req,res)=>{
+    const {name} = req.body
+    console.log(name)
+    const newAccount =  new UserTDT({
+        name: req.body.name
+       
+    })
+    newAccount.save((err) =>{
+        if(err){
+            res.json({
+                result: "Failed",
+                data: {},
+                message: `Error is : ${err}`
+            })
+        }
+        else{
+            res.json({
+                result: "ok",
+                name:req.body.name
+                
+               
+            })
+        }
+    })
+})
 
 
 module.exports = router;
