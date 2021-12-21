@@ -1,123 +1,68 @@
-<div class="col-md-6">
-
-    <div class="jfheuf">
-        <form method="POST" id="PostContent">
-            <div class="d-flex justify-content-around">
-                <div>
-                    <h6><i class="fas fa-edit text-primary pr-1"></i>Share an update</h6>
-                </div>
-                <div>
-                    <h6>
-                        <i class="fas fa-arrow-up text-success pr-1"></i> upload a photo
-                    </h6>
-                </div>
-                <div>
-                    <h6>
-                        <i class="fas fa-book-open text-info pr-1"></i> write an article
-                    </h6>
-                </div>
-            </div>
-            <input type="text" id="authId" name="authId" value="<%user.authId%>" hidden="true">
-            <textarea name="content" id="content" cols="3" rows="3" class="form-control"
-                placeholder="Write Something...."></textarea>
-            <hr>
-            <input type="submit" value="Đăng bài viết" id="bthPost" class="btn btn-info pull-right">
-        </form>
-
-    </div>
-    <div class="box1" id="PostElement">
-        <div class="d-flex skfjkk">
-            <div class="lkt40 avatar">
-                <img  class="avt" src="/Images/TDTU.png" alt="">
-            </div>
-            <div class="pl-2 pt-1 ">
-                <h6 class="name">
-                   TDTU System
-                    <span class="Time">
-                        21:30pm
-                    </span>
-                </h6>
-            </div>
-
-        </div>
-        <hr>
-        <p id="content" class="text-muted " name="content">
-        <h6 class="content">
-           Chào mừng đến với hệ thống TDTU
-        </h6>
-        </p>
-        <hr>
+<div class="jfheuf">
+    <form method="POST" id="PostContent">
         <div class="d-flex justify-content-around">
             <div>
-                <i class="fa fa-heart"></i>
-                Like
+                <h6><i class="fas fa-edit text-primary pr-1"></i>Share an update</h6>
             </div>
             <div>
-                <i class="fa fa-comment"></i>
-                Comments
+                <h6>
+                    <i class="fas fa-arrow-up text-success pr-1"></i> upload a photo
+                </h6>
+            </div>
+            <div>
+                <h6>
+                    <i class="fas fa-book-open text-info pr-1"></i> write an article
+                </h6>
+            </div>
+        </div>
+        <input type="text" id="authId" name="authId" value="<%user.authId%>" hidden="true">
+        <textarea name="content" id="content" cols="3" rows="3" class="form-control"
+            placeholder="Write Something...."></textarea>
+        <hr>
+        <input type="submit" value="Đăng bài viết" id="bthPost" class="btn btn-info pull-right">
+    </form>
+
+</div>
+<div id="CollectionDiv">
+    <% for (var i=0; i <post.length; i++) { %>
+        <div class="box1" id="<%= post[i]._id%>">
+            <div class="d-flex skfjkk">
+                <div class="lkt40 ">
+                    <img class="avt" src="<%= post[i].user.avatar%>" alt="">
+                </div>
+                <div class="pl-2 pt-1 ">
+                    <h6 class="name">
+                        <a href="/Wall/<%= post[i].user.authId%>">
+                            <%= post[i].user.name%>
+                        </a>
+                    </h6>
+
+                </div>
+
+            </div>
+            <hr>
+            <p id="content" class="text-muted " name="content">
+            <h6 class="content">
+                <%= post[i].content%>
+            </h6>
+            </p>
+            <hr>
+            <div class="d-flex justify-content-around">
+                <div>
+                    <i class="fa fa-heart"></i>
+                    Like
+                </div>
+                <div>
+                    <i class="fa fa-comment"></i>
+                    Comments
+                </div>
+
             </div>
 
         </div>
-    </div>
-    <div id="CollectionDiv">
-        <% for (var i=0; i <post.length; i++) { %>
-            <div class="box1" id="PostElement">
-                <div class="d-flex skfjkk">
-                    <div class="lkt40 ">
-                        <img class="avt" src="<%= post[i].user.avatar%>" alt="">
-                    </div>
-                    <div class="pl-2 pt-1 ">
-                        <h6 class="name">
-                            <%= post[i].user.name%>
-                                <span class="Time">
-                                    <%= post[i].update_at%>
-                                </span>
-                            <%if (user.authId==post[i].user.authId)
-                            {%>  
-                                <div class="btn-group">
-                                    <button id="btnGroupDrop1" type="button" class="btn btn-link dropdown-toggle"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-globe"></i>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                                        <a class="dropdown-item" href="#"><i class="fa fa-times-rectangle"></i> Delete</a>
-                                        <a class="dropdown-item" href="#"><i class="fa fa-edit"></i>Edit</a>
-                                    </div>
-                                </div>
-                            <%
-                            }
-                            %>
-                        </h6>
-                    </div>
 
-                </div>
-                <hr>
-                <p id="content" class="text-muted " name="content">
-                <h6 class="content">
-                    <%= post[i].content%>
-                </h6>
-                </p>
-                <hr>
-                <div>
-
-                </div>
-                <div>
-
-                </div>
-                <div class="d-flex justify-content-around">
-                    <div>
-                        <i class="fa fa-heart"></i>
-                        Like
-                    </div>
-                    <div>
-                        <i class="fa fa-comment"></i>
-                        Comments
-                    </div>
-
-                </div>
-            </div>
-
-            <%}%>
-    </div>
-
+        <%}%>
 </div>
+
+
+

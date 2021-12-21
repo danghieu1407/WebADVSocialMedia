@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const router = express.Router();
 var session = require('express-session');
 var passport = require('passport');
+var ObjectId = require('mongodb').ObjectID;
 const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
@@ -17,16 +18,17 @@ router.use(session({
 
 router.use(passport.initialize());
 router.use(passport.session());
-
-
 router.use(bodyParser.json())
-
 
 var UserTDT = require('../Models/UserModel')
 var Post = require('../Models/Post')
 
 let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
 let post;/*Lấy tất cả bài post trong moongose */
+
+
+
+
 router.get('/', isLoggedIn, (req, res, next) => {
     userTDTU = req.user; /*userTDTU là user hiện tại đang login */
     /*Do 1 bài post thì phải cần tên và ảnh, nhưng post chỉ chứa ID nên phải gắn 2 table lại với nhau*/
@@ -38,48 +40,68 @@ router.get('/', isLoggedIn, (req, res, next) => {
                 localField: "creator",
                 foreignField: "authId",
                 as: "user"
-            }             
-        },{"$unwind":"$user"},
-        { $sort : { _id : -1 } },
+            }
+        }, { "$unwind": "$user" },
+        { $sort: { _id: -1 } },
     ]).then((result) => {
-            post = result;
-            res.render('./Pages/index', { user: userTDTU, post: post });
-        }).catch((error) => {
-            console.log(error);
-        });
+        post = result;
+        res.render('./Pages/index', { user: userTDTU, post: post });
+    }).catch((error) => {
+        console.log(error);
+    });
 });
 
 router.post('/', isLoggedIn, (req, res, next) => {
     new Post({
-       creator: userTDTU.authId,
-       content: req.body.content,
-       create_at: new Date(),
-       update_at:  new Date()
-      }).save()
-    
-    result={authId:userTDTU.authId,content:req.body.content,user:userTDTU};
-    res.send(result)
+        creator: userTDTU.authId,
+        content: req.body.content,
+        create_at: new Date(),
+        update_at: new Date()
+    }).save(function (err, data) {
+        if (err) return console.error(err);
+        result = { post: data, user: userTDTU };
+        res.send(result);
+    });
+
+
+
 });
 
 
 
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated())
-        return next();
-    res.redirect('/user/login');
-}
+router.post('/DeletePost', function (req, res) {
+    console.log(req.body.IDPost);
+    query = { _id: ObjectId((req.body.IDPost)) }
+    Post.deleteOne(query, function (err, result) {
+        if (err) console.log(err);
+        else {
+            res.send(req.body);
+        }
+    })
 
+})
 
-router.get("/about", function (req, res) {
-    res.render("./Pages/about", { user: userTDTU });
+router.post("/EditPost", function (req, res) {
+    console.log(req.body)
+    query = { _id: ObjectId(req.body.IDPost) }
+    Post.findOneAndUpdate(query, { $set: { content: req.body.content ,update_at: new Date()} },{new: true}, function (err, result) {
+        if (err) console.log(err);
+        else {
+            res.send(result);
+        }
+    })
 })
 
 
-
-
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
-    res.render('./Pages/UserProfile', { user: userTDTU });
+    
+        Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => {
+        res.render('./Pages/UserProfile', { user: userTDTU,  post: result});
+        })
+    
 });
+
+
 
 
 router.post("/UserProfile", isLoggedIn, (req, res, next) => {
@@ -97,40 +119,57 @@ router.post("/UserProfile", isLoggedIn, (req, res, next) => {
     })
 
 });
-router.get('/adminmanager', isLoggedIn , (req , res)=>{
-    res.render('./Pages/adminmanager', { user: userTDTU});
+router.get('/adminmanager', isLoggedIn, (req, res) => {
+    res.render('./Pages/adminmanager', { user: userTDTU });
 })
 
-router.post('/adminmanager', isLoggedIn, (req,res)=>{
-    const {name} = req.body
+router.post('/adminmanager', isLoggedIn, (req, res) => {
+    const { name } = req.body
     console.log(name)
-    const newAccount =  new UserTDT({
+    const newAccount = new UserTDT({
         name: req.body.name
-       
+
     })
-    newAccount.save((err) =>{
-        if(err){
+    newAccount.save((err) => {
+        if (err) {
             res.json({
                 result: "Failed",
                 data: {},
                 message: `Error is : ${err}`
             })
         }
-        else{
+        else {
             res.json({
                 result: "ok",
-                name:req.body.name
-                
-               
+                name: req.body.name
+
+
             })
         }
     })
 })
 
+router.get('/Wall/:id', (req, res) => {
+    UserTDT.findOne({ authId: req.params.id }, (err, user) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            Post.find({ creator: user.authId }, (err, post) => {
+               
+                res.render('./Pages/Wall', { user: userTDTU, usertarget: user, post: post , layout: `./Layout/layout`});
+                
+            })
+
+        }
+    })
+
+})
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
         return next();
     res.redirect('/user/login');
 }
+
 module.exports = router;
