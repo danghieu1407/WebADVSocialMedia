@@ -8,6 +8,7 @@ var ObjectId = require('mongodb').ObjectID;
 const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
+var formidable = require('formidable')
 
 router.use(session({
     resave: false,
@@ -21,7 +22,8 @@ router.use(passport.session());
 router.use(bodyParser.json())
 
 var UserTDT = require('../Models/UserModel')
-var Post = require('../Models/Post')
+var Post = require('../Models/Post');
+const { start } = require('repl');
 
 let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
 let post;/*Lấy tất cả bài post trong moongose */
@@ -67,6 +69,18 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 });
 
+router.get('/logout',  function (req, res, next)  {
+    if (req.session) {
+      // delete session object
+      req.session.destroy(function (err) {
+        if (err) {
+          return next(err);
+        } else {
+          return res.redirect('/');
+        }
+      });
+    }
+  });
 
 
 router.post('/DeletePost', function (req, res) {
@@ -78,6 +92,18 @@ router.post('/DeletePost', function (req, res) {
             res.send(req.body);
         }
     })
+});
+router.post("/loadmore",async(req,res)=>{
+    var limit = 2;
+    var startFrom = parseInt(request.fields.startFrom);
+
+    var user = await db.collection('posts').find({})
+    .sort({'id': -1})
+    .skip(startFrom)
+    .limit(limit)
+    .toArray();
+    result.json(user);
+
 
 })
 
@@ -149,22 +175,7 @@ router.post('/adminmanager', isLoggedIn, (req, res) => {
     })
 })
 
-router.get('/Wall/:id', (req, res) => {
-    UserTDT.findOne({ authId: req.params.id }, (err, user) => {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            Post.find({ creator: user.authId }, (err, post) => {
-               
-                res.render('./Pages/Wall', { user: userTDTU, usertarget: user, post: post , layout: `./Layout/layout`});
-                
-            })
 
-        }
-    })
-
-})
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
