@@ -24,13 +24,13 @@ $(document).ready(function () {
                 newDiv.querySelector('.content').innerHTML = content;
                 newDiv.querySelector('.avt').src = avatar;
                 document.getElementsByClassName("box1")[0].id = data.post._id;
-
+                document.getElementById('content').innerHTML = "";
             }
         })
     });
-
-
 });
+
+
 $(document).ready(function () {
     $(".btn-delete").on("click", (event) =>{
         event.preventDefault();
