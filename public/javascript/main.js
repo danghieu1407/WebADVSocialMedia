@@ -13,6 +13,8 @@ $(document).ready(function () {
             data: JSON.stringify({ authID: authID, content: content }),
             success: function (data) {
                 console.log(data);
+                $('#content').trigger("reset");
+
                 let content = data.post.content;
                 let name = data.user.name;
                 let avatar = data.user.avatar;
@@ -26,11 +28,13 @@ $(document).ready(function () {
                 newDiv.querySelector('.avt').src = avatar;
 
                 document.getElementsByClassName("box1")[0].id = data.post._id;
-                document.querySelector('#content').innerHTML = "";
+                $('#PostContent')[0].reset();
+
             }
         })
     });
 });
+
 
 
 $(document).ready(function () {
@@ -71,6 +75,8 @@ $(document).ready(function () {
         let content = $('#contentedit').val();
         let id = $('#IDForEditContent').val();
         $("#editPost").modal("hide");
+   
+
         $.ajax({
             url: "/EditPost",
             method: 'POST',
@@ -80,6 +86,7 @@ $(document).ready(function () {
                 console.log(data)
                let Div = document.getElementById(data._id);
                Div.querySelector('.content').innerHTML = content;
+               $('#EditContent')[0].reset();
 
             }   
         })
