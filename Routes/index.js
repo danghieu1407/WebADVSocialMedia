@@ -9,7 +9,7 @@ const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
 var formidable = require('formidable')
-var Admin = require('../Models/AdminModel')
+
 const emailValidator = require('email-validator')
 router.use(session({
     resave: false,
@@ -24,6 +24,7 @@ router.use(bodyParser.json())
 
 var UserTDT = require('../Models/UserModel')
 var Post = require('../Models/Post');
+var Comment = require('../Models/Comment');
 const { start } = require('repl');
 const { Passport } = require('passport');
 
@@ -47,7 +48,7 @@ router.post('/login', (req, res, next) => {
         body = req.body
         let emailbt = body.email
         let passwordbt = body.password
-        Admin.findOne({ email: emailbt })
+        UserTDT.findOne({ email: emailbt })
             .then(user => {
                 if (!emailbt) {
                     error = 'Vui lòng nhập email!'
@@ -183,11 +184,17 @@ router.post('/DeletePost', function(req, res) {
     query = { _id: ObjectId((req.body.IDPost)) }
     Post.deleteOne(query, function(err, result) {
         if (err) console.log(err);
-        else {
-            res.send(req.body);
+        else 
+        {
+            Comment.deleteMany({ IdOfPost: ObjectId((req.body.IDPost)) }, function(err, result) 
+            {
+                if (err) console.log(err);
+                res.send(req.body);
+            });
         }
     })
 });
+
 router.post("/loadmore", async(req, res) => {
     var limit = 2;
     var startFrom = parseInt(request.fields.startFrom);
@@ -202,10 +209,9 @@ router.post("/loadmore", async(req, res) => {
 
 })
 
-router.post("/EditPost", function(req, res) {
-    console.log(req.body)
+router.post("/EditPost", function (req, res) {
     query = { _id: ObjectId(req.body.IDPost) }
-    Post.findOneAndUpdate(query, { $set: { content: req.body.content, update_at: new Date() } }, { new: true }, function(err, result) {
+    Post.findOneAndUpdate(query, { $set: { content: req.body.content, update_at: new Date() } }, { new: true }, function (err, result) {
         if (err) console.log(err);
         else {
             res.send(result);
@@ -216,7 +222,7 @@ router.post("/EditPost", function(req, res) {
 
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
 
-    Post.find({ creator: userTDTU.authId }).sort({ _id: -1 }, ).then((result) => {
+    Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => {
         res.render('./Pages/UserProfile', { user: userTDTU, post: result });
     })
 
@@ -233,10 +239,13 @@ router.post("/UserProfile", isLoggedIn, (req, res, next) => {
         if (err) {
             console.log("Something wrong when updating data!");
         }
-        userTDTU = doc;
-        console.log(userTDTU);
-
-        res.render('./Pages/UserProfile', { user: doc });
+        else {
+            userTDTU = doc;
+            Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => 
+            {
+                res.render('./Pages/UserProfile', { user: userTDTU, post: result });
+            })
+        }
     })
 
 });
@@ -269,6 +278,52 @@ router.post('/adminmanager', isLoggedIn, (req, res) => {
     })
 })
 
+
+router.post('/loadComment', (req, res) => {
+    Comment.find({ IdOfPost: req.body.IDPost }).sort({ _id: 1 },).then((result) => {
+        UserTDT.find({}, (err, doc) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                res.send({data:result,user:doc, OwnerComment:userTDTU.authId});
+            }
+        })
+    })
+})
+
+
+router.post("/SendComment", (req, res) => {
+    new Comment({
+        IdOfPost:  req.body.IDPost,
+        content:   req.body.comment,
+        Commentor: req.body.authID,
+        create_at: new Date(),
+        update_at: new Date()
+    }).save(function (err, data) {
+        if (err) 
+        {return console.error(err);}
+        else
+        {
+            UserTDT.findOne({ authId: req.body.authID },(err,doc)=>{
+                if(err)
+                {return console.error(err);}
+                res.send({data:data,user:doc})
+            })
+        }
+       
+    });
+})
+
+router.post("/DeleteComment", function(req, res) {
+    console.log(req.body);
+    Comment.findOneAndDelete({ _id: ObjectId(req.body.IDComment) }, function(err, result) {
+        if (err) console.log(err);
+        else {
+            res.send(req.body);
+        }
+    })
+})
 
 
 function isLoggedIn(req, res, next) {
