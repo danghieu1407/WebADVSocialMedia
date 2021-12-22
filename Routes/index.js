@@ -158,8 +158,13 @@ router.post('/DeletePost', function(req, res) {
     query = { _id: ObjectId((req.body.IDPost)) }
     Post.deleteOne(query, function(err, result) {
         if (err) console.log(err);
-        else {
-            res.send(req.body);
+        else 
+        {
+            Comment.deleteMany({ IdOfPost: ObjectId((req.body.IDPost)) }, function(err, result) 
+            {
+                if (err) console.log(err);
+                res.send(req.body);
+            });
         }
     })
 });
@@ -285,7 +290,13 @@ router.post("/SendComment", (req, res) => {
 })
 
 router.post("/DeleteComment", function(req, res) {
-
+    console.log(req.body);
+    Comment.findOneAndDelete({ _id: ObjectId(req.body.IDComment) }, function(err, result) {
+        if (err) console.log(err);
+        else {
+            res.send(req.body);
+        }
+    })
 })
 
 

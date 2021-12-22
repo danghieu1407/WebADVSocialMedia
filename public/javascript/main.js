@@ -116,12 +116,12 @@ $(document).ready(function () {
                     let OldDiv = document.querySelector('.ElementComment');
                     let newDiv = OldDiv.cloneNode(true);
 
-                    newDiv.setAttribute('data-id', cmt._id);
+                    newDiv.setAttribute('id', cmt._id);
                     let Deletebtn = document.createElement('a');
-                   
+
                     Deletebtn.setAttribute('data-id', cmt._id);
-                    Deletebtn.setAttribute("class","DeleteComment"); 
-           
+                    Deletebtn.setAttribute("class", "DeleteComment");
+
                     Deletebtn.innerHTML = "Xóa";
                     datauser.forEach(usercmt => {
                         if (cmt.Commentor == usercmt.authId) {
@@ -136,6 +136,9 @@ $(document).ready(function () {
                 })
             }
         })
+
+
+     
     });
 
     $("#CommentModal").on("submit", (event) => {
@@ -152,13 +155,13 @@ $(document).ready(function () {
                 let OldDiv = document.querySelector('.ElementComment');
                 let newDiv = OldDiv.cloneNode(true);
 
-                newDiv.setAttribute('data-id',data.data._id);
-                let Deletebtn = document.createElement('a'); 
+                newDiv.setAttribute('id', data.data._id);
+                let Deletebtn = document.createElement('a');
                 Deletebtn.setAttribute('data-id', data.data._id);
-                Deletebtn.setAttribute("class","DeleteComment"); 
+                Deletebtn.setAttribute("class", "DeleteComment");
                 Deletebtn.innerHTML = "Xóa";
-                newDiv.querySelector('.UserComment').innerHTML = data.user.name;              
-                newDiv.querySelector('.UserComment').appendChild(Deletebtn);             
+                newDiv.querySelector('.UserComment').innerHTML = data.user.name;
+                newDiv.querySelector('.UserComment').appendChild(Deletebtn);
                 newDiv.querySelector('.ContentOfComment').innerHTML = data.data.content;
                 list.appendChild(newDiv);
             }
@@ -174,10 +177,21 @@ $(document).ready(function () {
         list.appendChild(newDiv);
     })
 
-    $(".DeleteComment").on("click", (event) => {
+    $(document).on("click", ".DeleteComment",(event) => {
         event.preventDefault();
-      
-        console.log("Dang cho xoa du lieu");
+        let id = event.target.dataset.id;
+        console.log(id);
+        
+        $.ajax({
+            url: "/DeleteComment",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ IDComment: id }),
+            success: function (data) {
+                let Div = document.getElementById(id);
+                Div.remove();
+            }
+        })
     });
 })
 
