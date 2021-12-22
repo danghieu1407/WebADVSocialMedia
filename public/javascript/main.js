@@ -4,7 +4,7 @@ $(document).ready(function () {
         event.preventDefault();
         let authID = $('#authID').val();
         let content = $('#content').val();
-        document.getElementById('content').innerHTML ='';
+        document.getElementById('content').innerHTML = '';
 
         $.ajax({
             url: "/",
@@ -75,7 +75,7 @@ $(document).ready(function () {
         let content = $('#contentedit').val();
         let id = $('#IDForEditContent').val();
         $("#editPost").modal("hide");
-   
+
 
         $.ajax({
             url: "/EditPost",
@@ -84,22 +84,22 @@ $(document).ready(function () {
             data: JSON.stringify({ IDPost: id, content: content }),
             success: function (data) {
                 console.log(data)
-               let Div = document.getElementById(data._id);
-               Div.querySelector('.content').innerHTML = content;
-               $('#EditContent')[0].reset();
+                let Div = document.getElementById(data._id);
+                Div.querySelector('.content').innerHTML = content;
+                $('#EditContent')[0].reset();
 
             }
         })
-    }); 
+    });
 })
 
 
 
 let IDPost;
-$(document).ready(function(){
+$(document).ready(function () {
     $(".OpenCommentModal").on("click", (event) => {
         event.preventDefault();
-        IDPost= $(event.target).data('id');
+        IDPost = $(event.target).data('id');
         $("#CommentModal").modal("show");
         $.ajax({
             url: "/loadComment",
@@ -107,7 +107,30 @@ $(document).ready(function(){
             contentType: 'application/json',
             data: JSON.stringify({ IDPost: IDPost }),
             success: function (data) {
-                console.log(data)
+                let datacmt = data.data;
+                let datauser = data.user;
+                let list = document.getElementById('CommentList');
+                datacmt.forEach(cmt => {
+                    let OldDiv = document.querySelector('.ElementComment');
+                    let newDiv = OldDiv.cloneNode(true);
+
+                    newDiv.setAttribute('data-id', cmt._id);
+                    let Deletebtn = document.createElement('a');
+                    Deletebtn.setAttribute('href', '/DeleteComment');
+                    Deletebtn.setAttribute('data-id', cmt._id);
+                    Deletebtn.innerHTML = "Xóa";
+                    datauser.forEach(usercmt => {
+                        if (cmt.Commentor == usercmt.authId) {
+                            console.log(usercmt.name, cmt.Commentor, usercmt.authId);
+                            newDiv.querySelector('.UserComment').innerHTML = usercmt.name;
+                        }
+                    })
+                    if (cmt.Commentor == data.OwnerComment) {
+                        newDiv.querySelector('.UserComment').appendChild(Deletebtn);
+                    }
+                    newDiv.querySelector('.ContentOfComment').innerHTML = cmt.content;
+                    list.appendChild(newDiv);
+                })
             }
         })
     });
@@ -117,7 +140,37 @@ $(document).ready(function(){
         event.preventDefault();
         let authID = $('#authID').val();
         let comment = $('#comment').val();
+        $.ajax({
+            url: "/SendComment",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ IDPost: IDPost, authID: authID, comment: comment }),
+            success: function (data) {
+                let list = document.getElementById('CommentList');
+                let OldDiv = document.querySelector('.ElementComment');
+                let newDiv = OldDiv.cloneNode(true);
+
+                newDiv.setAttribute('data-id',data.data._id);
+                let Deletebtn = document.createElement('a');
+                Deletebtn.setAttribute('href', '/DeleteComment');
+                Deletebtn.setAttribute('data-id', data.data._id);
+                Deletebtn.innerHTML = "Xóa";
+                newDiv.querySelector('.UserComment').innerHTML = data.user.name;              
+               newDiv.querySelector('.UserComment').appendChild(Deletebtn);             
+                newDiv.querySelector('.ContentOfComment').innerHTML = data.data.content;
+                list.appendChild(newDiv);
+            }
+        })
 
     })
-  
+
+    $('#CommentModal').on('hidden.bs.modal', function () {
+        let list = document.getElementById('CommentList');
+        let Div = document.querySelector(".ElementComment");
+        let newDiv = Div.cloneNode(true);
+        list.innerHTML = '';
+        list.appendChild(newDiv);
+
+
+    })
 })

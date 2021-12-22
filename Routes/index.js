@@ -109,7 +109,6 @@ router.post("/loadmore", async (req, res) => {
 })
 
 router.post("/EditPost", function (req, res) {
-    console.log(req.body)
     query = { _id: ObjectId(req.body.IDPost) }
     Post.findOneAndUpdate(query, { $set: { content: req.body.content, update_at: new Date() } }, { new: true }, function (err, result) {
         if (err) console.log(err);
@@ -181,15 +180,39 @@ router.post('/adminmanager', isLoggedIn, (req, res) => {
 
 
 router.post('/loadComment', (req, res) => {
-    console.log(req.body);
     Comment.find({ IdOfPost: req.body.IDPost }).sort({ _id: 1 },).then((result) => {
-        res.send(result);
+        UserTDT.find({}, (err, doc) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                res.send({data:result,user:doc, OwnerComment:userTDTU.authId});
+            }
+        })
     })
 })
 
 
 router.post("/SendComment", (req, res) => {
-    
+    new Comment({
+        IdOfPost:  req.body.IDPost,
+        content:   req.body.comment,
+        Commentor: req.body.authID,
+        create_at: new Date(),
+        update_at: new Date()
+    }).save(function (err, data) {
+        if (err) 
+        {return console.error(err);}
+        else
+        {
+            UserTDT.findOne({ authId: req.body.authID },(err,doc)=>{
+                if(err)
+                {return console.error(err);}
+                res.send({data:data,user:doc})
+            })
+        }
+       
+    });
 })
 
 
