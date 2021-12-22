@@ -81,7 +81,7 @@ router.post('/login', (req, res, next) => {
                     const obj = JSON.parse(JSON.stringify(body));
 
                     tempcc = obj
-
+                    req.session.email = req.body.email
                     return res.redirect('/')
                 }
             })
@@ -118,13 +118,6 @@ router.get('/', isLoggedIn, (req, res, next) => {
     }).catch((error) => {
         console.log(error);
     });
-
-
-
-
-
-
-
 });
 
 router.post('/', isLoggedIn, (req, res, next) => {
@@ -135,6 +128,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
         update_at: new Date()
     }).save(function(err, data) {
         if (err) return console.error(err);
+
         result = { post: data, user: userTDTU };
         res.send(result);
     });
@@ -144,17 +138,17 @@ router.post('/', isLoggedIn, (req, res, next) => {
 });
 
 router.get('/logout', function(req, res, next) {
-
     if (req.session) {
         // delete session object
         req.session.destroy(function(err) {
             if (err) {
                 return next(err);
             } else {
-                return res.redirect('/');
+                return res.redirect('/login');
             }
         });
     }
+
 });
 
 
@@ -164,7 +158,7 @@ router.post('/DeletePost', function(req, res) {
     Post.deleteOne(query, function(err, result) {
         if (err) console.log(err);
         else {
-            res.send(req.body``);
+            res.send(req.body);
         }
     })
 });
