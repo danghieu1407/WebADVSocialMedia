@@ -9,12 +9,12 @@
     background-color: #efefef !important;
   }
   
-  .jsjhr .skfjh {
+  .jsjhr .skfjh .box1 {
     position: relative;
     top: 4rem;
   }
   
-  .jsjhr .skfjh .sfjhe {
+  .jsjhr .skfjh .sfjhe .box1 {
     background-color: #fff;
     padding: 12px;
     -webkit-box-shadow: 0px 0px 6px #ccc;
@@ -22,7 +22,7 @@
     height: 100%;
   }
   
-  .jsjhr .skfjh .sfjhe .sjfsj img {
+  .jsjhr .skfjh .sfjhe .sjfsj  img {
     width: 140px;
     margin-top: 9px;
     border-radius: 50%;
@@ -33,7 +33,7 @@
     font-size: 16px;
   }
   
-  .jsjhr .skfjh .jfheuf {
+  .jsjhr .skfjh .jfheuf .box1  {
     background-color: #fff;
     -webkit-box-shadow: 0px 0px 6px #ccc;
             box-shadow: 0px 0px 6px #ccc;
@@ -125,3 +125,9 @@
   }
   
 
+#CollectionDiv{
+  border-radius: 7px;
+}
+.box1{
+  border-radius: 7px;
+}

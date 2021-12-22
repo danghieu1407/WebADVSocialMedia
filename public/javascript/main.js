@@ -4,7 +4,7 @@ $(document).ready(function () {
         event.preventDefault();
         let authID = $('#authID').val();
         let content = $('#content').val();
-        
+        document.getElementById('content').innerHTML ='';
 
         $.ajax({
             url: "/",
@@ -13,6 +13,8 @@ $(document).ready(function () {
             data: JSON.stringify({ authID: authID, content: content }),
             success: function (data) {
                 console.log(data);
+                $('#content').trigger("reset");
+
                 let content = data.post.content;
                 let name = data.user.name;
                 let avatar = data.user.avatar;
@@ -26,11 +28,13 @@ $(document).ready(function () {
                 newDiv.querySelector('.avt').src = avatar;
 
                 document.getElementsByClassName("box1")[0].id = data.post._id;
-                document.querySelector('#content').innerHTML = "";
+                $('#PostContent')[0].reset();
+
             }
         })
     });
 });
+
 
 
 $(document).ready(function () {
@@ -71,6 +75,8 @@ $(document).ready(function () {
         let content = $('#contentedit').val();
         let id = $('#IDForEditContent').val();
         $("#editPost").modal("hide");
+   
+
         $.ajax({
             url: "/EditPost",
             method: 'POST',
@@ -78,29 +84,40 @@ $(document).ready(function () {
             data: JSON.stringify({ IDPost: id, content: content }),
             success: function (data) {
                 console.log(data)
-                let Div = document.getElementById(data._id);
-                Div.querySelector('.content').innerHTML = content;
+               let Div = document.getElementById(data._id);
+               Div.querySelector('.content').innerHTML = content;
+               $('#EditContent')[0].reset();
 
+            }
+        })
+    }); 
+})
+
+
+
+let IDPost;
+$(document).ready(function(){
+    $(".OpenCommentModal").on("click", (event) => {
+        event.preventDefault();
+        IDPost= $(event.target).data('id');
+        $("#CommentModal").modal("show");
+        $.ajax({
+            url: "/loadComment",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ IDPost: IDPost }),
+            success: function (data) {
+                console.log(data)
             }
         })
     });
 
 
-
-    
-})
-
-
-
-
-$(document).ready(function(){
-    $(".OpenCommentModal").on("click", (event) => {
+    $("#CommentModal").on("submit", (event) => {
         event.preventDefault();
-        $("#CommentModal").modal("show");
-    });
+        let authID = $('#authID').val();
+        let comment = $('#comment').val();
 
-    $("#SendComment").on("submit", (event) => {
-        event.preventDefault();
-        
-    });
+    })
+  
 })

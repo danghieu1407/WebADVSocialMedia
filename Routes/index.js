@@ -23,6 +23,7 @@ router.use(bodyParser.json())
 
 var UserTDT = require('../Models/UserModel')
 var Post = require('../Models/Post');
+var Comment = require('../Models/Comment');
 const { start } = require('repl');
 
 let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
@@ -178,6 +179,18 @@ router.post('/adminmanager', isLoggedIn, (req, res) => {
     })
 })
 
+
+router.post('/loadComment', (req, res) => {
+    console.log(req.body);
+    Comment.find({ IdOfPost: req.body.IDPost }).sort({ _id: 1 },).then((result) => {
+        res.send(result);
+    })
+})
+
+
+router.post("/SendComment", (req, res) => {
+    
+})
 
 
 function isLoggedIn(req, res, next) {
