@@ -1,4 +1,5 @@
 
+/*Đăng Nội Dung */
 $(document).ready(function () {
     $('#PostContent').on("submit", function (event) {
         event.preventDefault();
@@ -36,7 +37,7 @@ $(document).ready(function () {
 });
 
 
-
+/**Xóa Bài Viết */
 $(document).ready(function () {
     $(".btn-delete").on("click", (event) => {
         event.preventDefault();
@@ -57,7 +58,7 @@ $(document).ready(function () {
     });
 })
 
-
+/**Sửa bài viết */
 $(document).ready(function () {
     $(".btn-edit").on("click", (event) => {
         event.preventDefault();
@@ -96,6 +97,7 @@ $(document).ready(function () {
 
 
 let IDPost;
+/*Comment Bài Viết */
 $(document).ready(function () {
     $(".OpenCommentModal").on("click", (event) => {
         event.preventDefault();
@@ -116,12 +118,13 @@ $(document).ready(function () {
 
                     newDiv.setAttribute('data-id', cmt._id);
                     let Deletebtn = document.createElement('a');
-                    Deletebtn.setAttribute('href', '/DeleteComment');
+                   
                     Deletebtn.setAttribute('data-id', cmt._id);
+                    Deletebtn.setAttribute("class","DeleteComment"); 
+           
                     Deletebtn.innerHTML = "Xóa";
                     datauser.forEach(usercmt => {
                         if (cmt.Commentor == usercmt.authId) {
-                            console.log(usercmt.name, cmt.Commentor, usercmt.authId);
                             newDiv.querySelector('.UserComment').innerHTML = usercmt.name;
                         }
                     })
@@ -134,7 +137,6 @@ $(document).ready(function () {
             }
         })
     });
-
 
     $("#CommentModal").on("submit", (event) => {
         event.preventDefault();
@@ -151,12 +153,12 @@ $(document).ready(function () {
                 let newDiv = OldDiv.cloneNode(true);
 
                 newDiv.setAttribute('data-id',data.data._id);
-                let Deletebtn = document.createElement('a');
-                Deletebtn.setAttribute('href', '/DeleteComment');
+                let Deletebtn = document.createElement('a'); 
                 Deletebtn.setAttribute('data-id', data.data._id);
+                Deletebtn.setAttribute("class","DeleteComment"); 
                 Deletebtn.innerHTML = "Xóa";
                 newDiv.querySelector('.UserComment').innerHTML = data.user.name;              
-               newDiv.querySelector('.UserComment').appendChild(Deletebtn);             
+                newDiv.querySelector('.UserComment').appendChild(Deletebtn);             
                 newDiv.querySelector('.ContentOfComment').innerHTML = data.data.content;
                 list.appendChild(newDiv);
             }
@@ -170,7 +172,14 @@ $(document).ready(function () {
         let newDiv = Div.cloneNode(true);
         list.innerHTML = '';
         list.appendChild(newDiv);
-
-
     })
+
+    $(".DeleteComment").on("click", (event) => {
+        event.preventDefault();
+      
+        console.log("Dang cho xoa du lieu");
+    });
 })
+
+
+
