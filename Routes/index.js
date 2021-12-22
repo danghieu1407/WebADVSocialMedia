@@ -9,7 +9,7 @@ const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
 var formidable = require('formidable')
-var Admin = require('../Models/AdminModel')
+
 const emailValidator = require('email-validator')
 router.use(session({
     resave: false,
@@ -48,7 +48,7 @@ router.post('/login', (req, res, next) => {
         body = req.body
         let emailbt = body.email
         let passwordbt = body.password
-        Admin.findOne({ email: emailbt })
+        UserTDT.findOne({ email: emailbt })
             .then(user => {
                 if (!emailbt) {
                     error = 'Vui lòng nhập email!'

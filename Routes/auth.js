@@ -33,9 +33,7 @@ passport.use(new GoogleStrategy({
                         .then(user => done(null, user))
                         .catch(err => done(err, null));
                 } else {
-                    error = 'Tài khoản không tồn tại'
-
-                    return done(null, user)
+                    return done(null, false, { message: 'Tài khoản không tồn tại' })
                 }
 
             })
@@ -59,6 +57,6 @@ router.get('/google', passport.authenticate('google', {
         'https://www.googleapis.com/auth/userinfo.email'
     ]
 }));
-router.get('/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login' }));
+router.get('/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login', failureFlash: true }));
 
 module.exports = router;
