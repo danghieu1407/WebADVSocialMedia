@@ -4,6 +4,7 @@ $(document).ready(function () {
         event.preventDefault();
         let authID = $('#authID').val();
         let content = $('#content').val();
+        document.getElementById('content').innerHTML ='';
 
         $.ajax({
             url: "/",
@@ -23,8 +24,9 @@ $(document).ready(function () {
                 newDiv.querySelector('.name').innerHTML = name;
                 newDiv.querySelector('.content').innerHTML = content;
                 newDiv.querySelector('.avt').src = avatar;
+
                 document.getElementsByClassName("box1")[0].id = data.post._id;
-                document.getElementById('content').innerHTML = "";
+                document.querySelector('#content').innerHTML = "";
             }
         })
     });
