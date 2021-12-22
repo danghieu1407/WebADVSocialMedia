@@ -33,7 +33,36 @@ $(document).ready(function () {
             }
         })
     });
+
 });
+
+$(document).ready(function () {
+    $.ajax({
+        url: "/loadmore",
+        method: 'GET',
+        contentType: 'application/json',
+        success: function (data) {
+            
+            let content = data.post.content;
+            let name = data.user.name;
+            let avatar = data.user.avatar;
+            console.log(data);
+            for(var i = 0; i < data.post.length; i ++){
+            let olddiv  = document.querySelector('.box1');
+            let newdiv = olddiv.cloneNode(true);
+            let list = document.getElementById('CollectionDiv');
+            list.insertBefore(newdiv, list.childNodes[0]);
+            newDiv.querySelector('.name').innerHTML = name;
+            newDiv.querySelector('.content').innerHTML = content;
+                newdiv.querySelector('.avt').scr = avatar;
+                document.getElementsByClassName("box1")[0].id = data.post._id;
+               $('#CollectionDiv').append(newdiv)
+            }
+
+        }
+    })
+})
+
 
 
 
