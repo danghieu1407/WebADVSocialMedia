@@ -32,6 +32,10 @@ passport.use(new GoogleStrategy({
                         }).save()
                         .then(user => done(null, user))
                         .catch(err => done(err, null));
+                } else {
+                    error = 'Tài khoản không tồn tại'
+
+                    return done(null, user)
                 }
 
             })
