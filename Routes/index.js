@@ -89,7 +89,7 @@ router.post('/DeletePost', function (req, res) {
     Post.deleteOne(query, function (err, result) {
         if (err) console.log(err);
         else {
-            res.send(req.body``);
+            res.send(req.body);
         }
     })
 });
