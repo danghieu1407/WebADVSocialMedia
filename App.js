@@ -1,17 +1,17 @@
 require("dotenv").config();
-var express           = require('express');
-var bodyParser        = require('body-parser')
-var app               = express();
+var express = require('express');
+var bodyParser = require('body-parser')
+var app = express();
 
-var authRouter        = require('./Routes/auth');
-var UserRouter        = require('./Routes/user');
-var IndexRouter       = require('./Routes/index');
+var authRouter = require('./Routes/auth');
+// var UserRouter        = require('./Routes/user');
+var IndexRouter = require('./Routes/index');
 const bp = require('body-parser')
 
 
 
-const expressLayouts  = require('express-ejs-layouts');
-app.set("layout","./Layout/layout");
+const expressLayouts = require('express-ejs-layouts');
+app.set("layout", "./Layout/layout");
 app.set('view engine', 'ejs');
 app.set("layout extractScripts", true)
 
@@ -21,9 +21,9 @@ app.use(express.static("public"));
 app.use(bodyParser.json())
 
 app.use(expressLayouts);
-app.use("",IndexRouter);
+app.use("", IndexRouter);
 app.use('/auth', authRouter);
-app.use("/user",UserRouter);
+// app.use("/user",UserRouter);
 
 
 

@@ -9,7 +9,8 @@ const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
 var formidable = require('formidable')
-
+var Admin = require('../Models/AdminModel')
+const emailValidator = require('email-validator')
 router.use(session({
     resave: false,
     saveUninitialized: true,
@@ -24,20 +25,86 @@ router.use(bodyParser.json())
 var UserTDT = require('../Models/UserModel')
 var Post = require('../Models/Post');
 const { start } = require('repl');
+const { Passport } = require('passport');
 
 let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
-let post;/*Lấy tất cả bài post trong moongose */
+let post; /*Lấy tất cả bài post trong moongose */
+
+
+// Quài Bẻo thêm dô từ khúc này
+router.get('/login', (req, res, next) => {
+
+    res.render('Layout/login', { layout: `./Layout/login` })
+})
+temp = false // cai lon nay dung de xac nhan cho cai ham isLoggedIn
+
+let tempcc;
+
+
+
+router.post('/login', (req, res, next) => {
+        let error = ''
+        body = req.body
+        let emailbt = body.email
+        let passwordbt = body.password
+        Admin.findOne({ email: emailbt })
+            .then(user => {
+                if (!emailbt) {
+                    error = 'Vui lòng nhập email!'
+                } else if (!emailbt.includes('@')) {
+                    error = 'Email không hợp lệ!'
+                } else if (!user) {
+                    error = 'Tài khoản không tồn tại!'
+                } else if (!passwordbt) {
+                    error = 'Vui lòng nhập mật khẩu'
+                } else if (passwordbt.length < 6) {
+                    error = 'Mật khẩu phải từ 6 kí tự'
+                } else if (passwordbt !== user.password) {
+                    error = 'Mật khẩu không chính xác'
+                }
+                console.log(error)
+                if (error.length > 0) {
+                    res.render('./Layout/login', {
+                        layout: `./Layout/login`,
+                        errorMessage: error
+                    })
+
+                } else {
+                    temp = true
+                    body.authId = user.authId
+                    body.role = user.role
+                    body.name = user.name
+                    body.created = user.created
+                    body.updated = user.updated
+                    body.avatar = user.avatar
+
+                    const obj = JSON.parse(JSON.stringify(body));
+
+                    tempcc = obj
+
+                    return res.redirect('/')
+                }
+            })
+    })
+    // console.log(tempcc)
+    // Tới khúc này
+
 
 
 
 
 router.get('/', isLoggedIn, (req, res, next) => {
-    userTDTU = req.user; /*userTDTU là user hiện tại đang login */
+
+    if (!req.user) {
+        userTDTU = tempcc
+
+    } else {
+        userTDTU = req.user;
+    }
+    /*userTDTU là user hiện tại đang login */
     /*Do 1 bài post thì phải cần tên và ảnh, nhưng post chỉ chứa ID nên phải gắn 2 table lại với nhau*/
-    Post.aggregate([
-        {
-            $lookup:
-            {
+    Post.aggregate([{
+            $lookup: {
                 from: "usertdtus",
                 localField: "creator",
                 foreignField: "authId",
@@ -51,6 +118,13 @@ router.get('/', isLoggedIn, (req, res, next) => {
     }).catch((error) => {
         console.log(error);
     });
+
+
+
+
+
+
+
 });
 
 router.post('/', isLoggedIn, (req, res, next) => {
@@ -59,7 +133,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
         content: req.body.content,
         create_at: new Date(),
         update_at: new Date()
-    }).save(function (err, data) {
+    }).save(function(err, data) {
         if (err) return console.error(err);
         result = { post: data, user: userTDTU };
         res.send(result);
@@ -69,48 +143,49 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 });
 
-router.get('/logout',  function (req, res, next)  {
+router.get('/logout', function(req, res, next) {
+
     if (req.session) {
-      // delete session object
-      req.session.destroy(function (err) {
-        if (err) {
-          return next(err);
-        } else {
-          return res.redirect('/');
-        }
-      });
+        // delete session object
+        req.session.destroy(function(err) {
+            if (err) {
+                return next(err);
+            } else {
+                return res.redirect('/');
+            }
+        });
     }
-  });
+});
 
 
-router.post('/DeletePost', function (req, res) {
+router.post('/DeletePost', function(req, res) {
     console.log(req.body.IDPost);
     query = { _id: ObjectId((req.body.IDPost)) }
-    Post.deleteOne(query, function (err, result) {
+    Post.deleteOne(query, function(err, result) {
         if (err) console.log(err);
         else {
             res.send(req.body);
         }
     })
 });
-router.post("/loadmore",async(req,res)=>{
+router.post("/loadmore", async(req, res) => {
     var limit = 2;
     var startFrom = parseInt(request.fields.startFrom);
 
     var user = await db.collection('posts').find({})
-    .sort({'id': -1})
-    .skip(startFrom)
-    .limit(limit)
-    .toArray();
+        .sort({ 'id': -1 })
+        .skip(startFrom)
+        .limit(limit)
+        .toArray();
     result.json(user);
 
 
 })
 
-router.post("/EditPost", function (req, res) {
+router.post("/EditPost", function(req, res) {
     console.log(req.body)
     query = { _id: ObjectId(req.body.IDPost) }
-    Post.findOneAndUpdate(query, { $set: { content: req.body.content ,update_at: new Date()} },{new: true}, function (err, result) {
+    Post.findOneAndUpdate(query, { $set: { content: req.body.content, update_at: new Date() } }, { new: true }, function(err, result) {
         if (err) console.log(err);
         else {
             res.send(result);
@@ -120,11 +195,11 @@ router.post("/EditPost", function (req, res) {
 
 
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
-    
-        Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => {
-        res.render('./Pages/UserProfile', { user: userTDTU,  post: result});
-        })
-    
+
+    Post.find({ creator: userTDTU.authId }).sort({ _id: -1 }, ).then((result) => {
+        res.render('./Pages/UserProfile', { user: userTDTU, post: result });
+    })
+
 });
 
 
@@ -163,8 +238,7 @@ router.post('/adminmanager', isLoggedIn, (req, res) => {
                 data: {},
                 message: `Error is : ${err}`
             })
-        }
-        else {
+        } else {
             res.json({
                 result: "ok",
                 name: req.body.name
@@ -178,9 +252,9 @@ router.post('/adminmanager', isLoggedIn, (req, res) => {
 
 
 function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated())
+    if (req.isAuthenticated() || temp === true)
         return next();
-    res.redirect('/user/login');
+    res.redirect('/login');
 }
 
 module.exports = router;
