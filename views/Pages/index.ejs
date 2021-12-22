@@ -32,12 +32,11 @@
                 </div>
                 <div class="pl-2 pt-1 ">
                     <h6 class="name">
-                        <a href="/Wall/<%= post[i].user.authId%>">
+                        <a href="">
                             <%= post[i].user.name%>
                         </a>
                     </h6>
-
-                </div>
+               </div>
 
             </div>
             <hr>
@@ -52,7 +51,7 @@
                     <i class="fa fa-heart"></i>
                     Like
                 </div>
-                <div>
+                <div data-id="<%= post[i]._id%>" class= "OpenCommentModal">
                     <i class="fa fa-comment"></i>
                     Comments
                 </div>

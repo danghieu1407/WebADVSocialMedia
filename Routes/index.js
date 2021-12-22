@@ -69,18 +69,18 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 });
 
-router.get('/logout',  function (req, res, next)  {
+router.get('/logout', function (req, res, next) {
     if (req.session) {
-      // delete session object
-      req.session.destroy(function (err) {
-        if (err) {
-          return next(err);
-        } else {
-          return res.redirect('/');
-        }
-      });
+        // delete session object
+        req.session.destroy(function (err) {
+            if (err) {
+                return next(err);
+            } else {
+                return res.redirect('/');
+            }
+        });
     }
-  });
+});
 
 
 router.post('/DeletePost', function (req, res) {
@@ -93,15 +93,15 @@ router.post('/DeletePost', function (req, res) {
         }
     })
 });
-router.post("/loadmore",async(req,res)=>{
+router.post("/loadmore", async (req, res) => {
     var limit = 2;
     var startFrom = parseInt(request.fields.startFrom);
 
     var user = await db.collection('posts').find({})
-    .sort({'id': -1})
-    .skip(startFrom)
-    .limit(limit)
-    .toArray();
+        .sort({ 'id': -1 })
+        .skip(startFrom)
+        .limit(limit)
+        .toArray();
     result.json(user);
 
 
@@ -110,7 +110,7 @@ router.post("/loadmore",async(req,res)=>{
 router.post("/EditPost", function (req, res) {
     console.log(req.body)
     query = { _id: ObjectId(req.body.IDPost) }
-    Post.findOneAndUpdate(query, { $set: { content: req.body.content ,update_at: new Date()} },{new: true}, function (err, result) {
+    Post.findOneAndUpdate(query, { $set: { content: req.body.content, update_at: new Date() } }, { new: true }, function (err, result) {
         if (err) console.log(err);
         else {
             res.send(result);
@@ -120,11 +120,11 @@ router.post("/EditPost", function (req, res) {
 
 
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
-    
-        Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => {
-        res.render('./Pages/UserProfile', { user: userTDTU,  post: result});
-        })
-    
+
+    Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => {
+        res.render('./Pages/UserProfile', { user: userTDTU, post: result });
+    })
+
 });
 
 
@@ -138,10 +138,13 @@ router.post("/UserProfile", isLoggedIn, (req, res, next) => {
         if (err) {
             console.log("Something wrong when updating data!");
         }
-        userTDTU = doc;
-        console.log(userTDTU);
-
-        res.render('./Pages/UserProfile', { user: doc });
+        else {
+            userTDTU = doc;
+            Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => 
+            {
+                res.render('./Pages/UserProfile', { user: userTDTU, post: result });
+            })
+        }
     })
 
 });

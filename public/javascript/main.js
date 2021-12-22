@@ -4,7 +4,7 @@ $(document).ready(function () {
         event.preventDefault();
         let authID = $('#authID').val();
         let content = $('#content').val();
-        document.getElementById('content').innerHTML ='';
+        
 
         $.ajax({
             url: "/",
@@ -34,7 +34,7 @@ $(document).ready(function () {
 
 
 $(document).ready(function () {
-    $(".btn-delete").on("click", (event) =>{
+    $(".btn-delete").on("click", (event) => {
         event.preventDefault();
         const id = $(event.target).data('id');
         console.log(id);
@@ -55,18 +55,18 @@ $(document).ready(function () {
 
 
 $(document).ready(function () {
-    $(".btn-edit").on("click", (event) =>{
+    $(".btn-edit").on("click", (event) => {
         event.preventDefault();
-       const button_edit = event.target;
-       const content = button_edit.dataset.content;
-       const id = button_edit.dataset.id;
-       
-       $("#IDForEditContent").attr("value", id);
-       $("#contentedit").html(content);
+        const button_edit = event.target;
+        const content = button_edit.dataset.content;
+        const id = button_edit.dataset.id;
+
+        $("#IDForEditContent").attr("value", id);
+        $("#contentedit").html(content);
         $("#editPost").modal("show");
     });
 
-    $("#EditContent").on("submit", (event) =>{
+    $("#EditContent").on("submit", (event) => {
         event.preventDefault();
         let content = $('#contentedit').val();
         let id = $('#IDForEditContent').val();
@@ -78,12 +78,29 @@ $(document).ready(function () {
             data: JSON.stringify({ IDPost: id, content: content }),
             success: function (data) {
                 console.log(data)
-               let Div = document.getElementById(data._id);
-               Div.querySelector('.content').innerHTML = content;
+                let Div = document.getElementById(data._id);
+                Div.querySelector('.content').innerHTML = content;
 
-            }   
+            }
         })
     });
 
+
+
     
+})
+
+
+
+
+$(document).ready(function(){
+    $(".OpenCommentModal").on("click", (event) => {
+        event.preventDefault();
+        $("#CommentModal").modal("show");
+    });
+
+    $("#SendComment").on("submit", (event) => {
+        event.preventDefault();
+        
+    });
 })
