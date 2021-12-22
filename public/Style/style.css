@@ -45,7 +45,14 @@
     border-bottom: 1px solid #efefef;
     outline: navajowhite;
   }
-  
+  #box1{
+    border-radius: 7px;
+    background-color: rgb(228, 228, 228);
+  }
+  .box1{
+  border-radius: 7px;
+
+  }
   .jsjhr .skfjh .box1 {
     background-color: #fff;
     -webkit-box-shadow: 0px 0px 6px #ccc;
@@ -128,6 +135,14 @@
 #CollectionDiv{
   border-radius: 7px;
 }
-.box1{
+
+.profilePOST{
   border-radius: 7px;
+  padding: 12px;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 10px;
+
+ 
+
+    top: 4rem;
 }
