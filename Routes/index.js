@@ -9,8 +9,12 @@ const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
 var formidable = require('formidable')
+<<<<<<< HEAD
 var multer = require('multer')
 
+=======
+var flash = require('connect-flash');
+>>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
 const emailValidator = require('email-validator')
 router.use(session({
     resave: false,
@@ -18,6 +22,7 @@ router.use(session({
     secret: 'SECRET'
 }));
 
+<<<<<<< HEAD
 var storage =   multer.diskStorage({
     destination: function (req, file, callback) {
       callback(null, './uploads');
@@ -30,6 +35,9 @@ var storage =   multer.diskStorage({
 var upload = multer({ storage : storage});
 
 
+=======
+router.use(flash())
+>>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
 router.use(passport.initialize());
 router.use(passport.session());
 router.use(bodyParser.json())
@@ -49,7 +57,8 @@ router.get('/login', (req, res, next) => {
 
     res.render('Layout/login', { layout: `./Layout/login` })
 })
-temp = false // cai lon nay dung de xac nhan cho cai ham isLoggedIn
+temp = false // Cái này trả về true cho hàm isLoggedIn
+
 
 let tempcc;
 
@@ -75,13 +84,11 @@ router.post('/login', (req, res, next) => {
                 } else if (passwordbt !== user.password) {
                     error = 'Mật khẩu không chính xác'
                 }
-                console.log(error)
                 if (error.length > 0) {
                     res.render('./Layout/login', {
                         layout: `./Layout/login`,
-                        errorMessage: error
+                        error: error
                     })
-
                 } else {
                     temp = true
                     body.authId = user.authId
@@ -110,9 +117,11 @@ router.get('/', isLoggedIn,(req, res, next) => {
     // res.sendFile(__dirname + "/Pages/index");
     console.log(req.file);
     if (!req.user) {
+
         userTDTU = tempcc
 
     } else {
+
         userTDTU = req.user;
     }
     /*userTDTU là user hiện tại đang login */

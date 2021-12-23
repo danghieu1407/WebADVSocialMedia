@@ -34,9 +34,9 @@ $(document).ready(function () {
             }
         })
     });
-
 });
 
+<<<<<<< HEAD
 // $(document).ready(function () {
 //     $.ajax({
 //         url: "/loadmore",
@@ -65,13 +65,15 @@ $(document).ready(function () {
 // })
 
 
+=======
+>>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
 
 /**Xóa Bài Viết */
 $(document).ready(function () {
-    $(".btn-delete").on("click", (event) => {
+    $(document).on("click","#btn-delete",(event) => {
         event.preventDefault();
         const id = $(event.target).data('id');
-        console.log(id);
+        console.log("Đã xóa bài viết tại hàm main.js");
         $.ajax({
             url: "/DeletePost",
             method: 'POST',
