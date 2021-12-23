@@ -98,8 +98,9 @@
                             <h6 class="name">
                                 <%=user.name%>
                             </h6>
-                            <a data-id="<%= post[i]._id%>" href="" id="btn-delete">Delete</a>
-                            <a data-content="<%= post[i].content%>" data-id="<%= post[i]._id%>" href="/Edit"class="btn-edit">Edit</a>
+                            <a data-id="<%= post[i]._id%>" href="/DeletePost" id="btn-delete">Delete</a>
+                            <a data-content="<%= post[i].content%>" data-id="<%= post[i]._id%>" href="/Edit"
+                                class="btn-edit">Edit</a>
                         </div>
                     </div>
                     <hr>
