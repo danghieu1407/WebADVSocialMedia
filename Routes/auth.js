@@ -37,8 +37,12 @@ passport.use(new GoogleStrategy({
                         .then(user => done(null, user))
                         .catch(err => done(err, null));
                 } else {
+<<<<<<< HEAD
+                    return done(null, false, req.flash('error','Tài khoản không tồn tại' ))
+=======
                     tempcc = 'Tài khoản không tồn tại'
                     return done(null, false, { message: tempcc })
+>>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
                 }
 
             })

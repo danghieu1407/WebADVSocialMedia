@@ -36,7 +36,11 @@
     "http": "^0.0.1-security",
     "json-stringify": "^1.0.0",
     "mongoose": "^6.1.2",
+<<<<<<< HEAD
+    "multer": "^1.4.4",
+=======
     "node-popup": "^0.1.14",
+>>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
     "nodemon": "^2.0.15",
     "parse-json": "^6.0.2",
     "passport": "^0.5.2",

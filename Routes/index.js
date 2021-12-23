@@ -9,7 +9,12 @@ const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
 var formidable = require('formidable')
+<<<<<<< HEAD
+var multer = require('multer')
+
+=======
 var flash = require('connect-flash');
+>>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
 const emailValidator = require('email-validator')
 router.use(session({
     resave: false,
@@ -17,7 +22,22 @@ router.use(session({
     secret: 'SECRET'
 }));
 
+<<<<<<< HEAD
+var storage =   multer.diskStorage({
+    destination: function (req, file, callback) {
+      callback(null, './uploads');
+    },
+    filename: function (req, file, callback) {
+      callback(null, file.originalname);
+    }
+  });
+  
+var upload = multer({ storage : storage});
+
+
+=======
 router.use(flash())
+>>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
 router.use(passport.initialize());
 router.use(passport.session());
 router.use(bodyParser.json())
@@ -30,7 +50,7 @@ const { Passport } = require('passport');
 
 let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
 let post; /*Lấy tất cả bài post trong moongose */
-
+// Daehyeu router upload hinh anh 
 
 // Quài Bẻo thêm dô từ khúc này
 router.get('/login', (req, res, next) => {
@@ -93,8 +113,9 @@ router.post('/login', (req, res, next) => {
 
 
 
-router.get('/', isLoggedIn, (req, res, next) => {
-
+router.get('/', isLoggedIn,(req, res, next) => {
+    // res.sendFile(__dirname + "/Pages/index");
+    console.log(req.file);
     if (!req.user) {
 
         userTDTU = tempcc
@@ -196,19 +217,7 @@ router.post('/DeletePost', function(req, res) {
     })
 });
 
-router.post("/loadmore", async(req, res) => {
-    var limit = 2;
-    var startFrom = parseInt(request.fields.startFrom);
 
-    var user = await db.collection('posts').find({})
-        .sort({ 'id': -1 })
-        .skip(startFrom)
-        .limit(limit)
-        .toArray();
-    result.json(user);
-
-
-})
 
 router.post("/EditPost", function (req, res) {
     query = { _id: ObjectId(req.body.IDPost) }

@@ -36,6 +36,37 @@ $(document).ready(function () {
     });
 });
 
+<<<<<<< HEAD
+// $(document).ready(function () {
+//     $.ajax({
+//         url: "/loadmore",
+//         method: 'GET',
+//         contentType: 'application/json',
+//         success: function (data) {
+            
+//             let content = data.post.content;
+//             let name = data.user.name;
+//             let avatar = data.user.avatar;
+//             console.log(data);
+//             for(var i = 0; i < data.post.length; i ++){
+//             let olddiv  = document.querySelector('.box1');
+//             let newdiv = olddiv.cloneNode(true);
+//             let list = document.getElementById('CollectionDiv');
+//             list.insertBefore(newdiv, list.childNodes[0]);
+//             newDiv.querySelector('.name').innerHTML = name;
+//             newDiv.querySelector('.content').innerHTML = content;
+//                 newdiv.querySelector('.avt').scr = avatar;
+//                 document.getElementsByClassName("box1")[0].id = data.post._id;
+//                $('#CollectionDiv').append(newdiv)
+//             }
+
+//         }
+//     })
+// })
+
+
+=======
+>>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
 
 /**Xóa Bài Viết */
 $(document).ready(function () {
@@ -181,7 +212,7 @@ $(document).ready(function () {
         event.preventDefault();
         let id = event.target.dataset.id;
         console.log(id);
-        
+        console.log()
         $.ajax({
             url: "/DeleteComment",
             method: 'POST',
