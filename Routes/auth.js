@@ -1,6 +1,7 @@
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var User = require('../Models/UserModel');
+var Error = require('../Models/Error')
 var express = require('express');
 var router = express.Router();
 passport.use(new GoogleStrategy({
@@ -28,12 +29,24 @@ passport.use(new GoogleStrategy({
                             avatar: profile.photos[0].value,
                             Class: "XXXXXXX",
                             Faculty: "XXXXXXX",
-                            role: 'student',
+                            role: 'Student',
                         }).save()
                         .then(user => done(null, user))
                         .catch(err => done(err, null));
                 } else {
-                    return done(null, false, { message: 'Tài khoản không tồn tại' })
+
+                    Error.findOne({ 'errorId': '01' })
+                        .then(user => {
+                            if (user) return done(null, user)
+                            else {
+                                new Error({
+                                        errorId: '01',
+                                        message: 'Tài khoản không tồn tại'
+                                    }).save()
+                                    .then(user => done(null, user))
+                                    .catch(err => done(err, null));
+                            }
+                        })
                 }
 
             })
@@ -57,6 +70,6 @@ router.get('/google', passport.authenticate('google', {
         'https://www.googleapis.com/auth/userinfo.email'
     ]
 }));
-router.get('/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login', failureFlash: true }));
+router.get('/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login' }));
 
 module.exports = router;

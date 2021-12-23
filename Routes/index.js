@@ -9,7 +9,7 @@ const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
 var formidable = require('formidable')
-
+var Error = require('../Models/Error')
 const emailValidator = require('email-validator')
 router.use(session({
     resave: false,
@@ -35,7 +35,28 @@ let post; /*Lấy tất cả bài post trong moongose */
 // Quài Bẻo thêm dô từ khúc này
 router.get('/login', (req, res, next) => {
 
-    res.render('Layout/login', { layout: `./Layout/login` })
+    Error.findOne({ 'errorId': '01' })
+        .then(user => {
+            let error = ''
+            if (user) {
+
+                error = user.message
+                Error.deleteOne({ 'errorId': '01' }, function(err, result) {
+                    if (err) throw err;
+                });
+            }
+            if (error.length > 0) {
+                res.render('./Layout/login', {
+                    layout: `./Layout/login`,
+                    errorMessage: error
+                })
+
+            } else {
+                res.render('Layout/login', { layout: `./Layout/login` })
+            }
+        })
+
+
 })
 temp = false // cai lon nay dung de xac nhan cho cai ham isLoggedIn
 
@@ -63,7 +84,7 @@ router.post('/login', (req, res, next) => {
                 } else if (passwordbt !== user.password) {
                     error = 'Mật khẩu không chính xác'
                 }
-                console.log(error)
+
                 if (error.length > 0) {
                     res.render('./Layout/login', {
                         layout: `./Layout/login`,
