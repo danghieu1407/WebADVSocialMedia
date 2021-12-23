@@ -268,32 +268,63 @@ router.post("/UserProfile", isLoggedIn, (req, res, next) => {
 
 });
 router.get('/adminmanager', isLoggedIn, (req, res) => {
+    if (!req.user) {
+        userTDTU = tempcc
+
+    } else {
+        userTDTU = req.user;
+    }
+
     res.render('./Pages/adminmanager', { user: userTDTU });
 })
 
 router.post('/adminmanager', isLoggedIn, (req, res) => {
+    if (!req.user) {
+        userTDTU = tempcc
+
+    } else {
+        userTDTU = req.user;
+    }
+    const { email } = req.body
+    const { password } = req.body
     const { name } = req.body
-    console.log(name)
-    const newAccount = new UserTDT({
-        name: req.body.name
+    let success;
+    UserTDT.findOne({ email: email })
+        .then(user => {
+            if (user) {
+                error = 'Tài khoản đã tồn tại'
+                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+            } else if (!name) {
+                error = 'Nhập tên người dùng'
+                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+            } else if (email === '') {
+                error = 'Nhập email'
+                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+            } else if (!email.includes('@tdtu.edu.vn') && !email.includes('@student.tdtu.edu.vn')) {
+                error = 'Email không hợp lệ'
+                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+            } else if (!password) {
+                error = 'Nhập mật khẩu'
+                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+            } else if (password.length < 6) {
+                error = 'Mật khẩu phải nhiều hơn 6 kí tự'
+                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+            } else {
+                new UserTDT({
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: req.body.password,
+                    Faculty: req.body.faculty,
+                    role: req.body.role,
+                    created: new Date(),
+                    avatar: req.body.avatar
+                }).save()
+                success = 'Tạo tài khoản thành công'
+                res.render('./Pages/adminmanager', { user: userTDTU, successMessage: success })
+            }
+        })
 
-    })
-    newAccount.save((err) => {
-        if (err) {
-            res.json({
-                result: "Failed",
-                data: {},
-                message: `Error is : ${err}`
-            })
-        } else {
-            res.json({
-                result: "ok",
-                name: req.body.name
 
-
-            })
-        }
-    })
 })
 
 
