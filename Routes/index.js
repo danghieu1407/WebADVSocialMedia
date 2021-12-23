@@ -9,6 +9,7 @@ const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
 var formidable = require('formidable')
+var multer = require('multer')
 
 const emailValidator = require('email-validator')
 router.use(session({
@@ -16,6 +17,17 @@ router.use(session({
     saveUninitialized: true,
     secret: 'SECRET'
 }));
+
+var storage =   multer.diskStorage({
+    destination: function (req, file, callback) {
+      callback(null, './uploads');
+    },
+    filename: function (req, file, callback) {
+      callback(null, file.originalname);
+    }
+  });
+  
+var upload = multer({ storage : storage});
 
 
 router.use(passport.initialize());
@@ -30,7 +42,7 @@ const { Passport } = require('passport');
 
 let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
 let post; /*Lấy tất cả bài post trong moongose */
-
+// Daehyeu router upload hinh anh 
 
 // Quài Bẻo thêm dô từ khúc này
 router.get('/login', (req, res, next) => {
@@ -94,8 +106,9 @@ router.post('/login', (req, res, next) => {
 
 
 
-router.get('/', isLoggedIn, (req, res, next) => {
-
+router.get('/', isLoggedIn,(req, res, next) => {
+    // res.sendFile(__dirname + "/Pages/index");
+    console.log(req.file);
     if (!req.user) {
         userTDTU = tempcc
 
@@ -195,19 +208,7 @@ router.post('/DeletePost', function(req, res) {
     })
 });
 
-router.post("/loadmore", async(req, res) => {
-    var limit = 2;
-    var startFrom = parseInt(request.fields.startFrom);
 
-    var user = await db.collection('posts').find({})
-        .sort({ 'id': -1 })
-        .skip(startFrom)
-        .limit(limit)
-        .toArray();
-    result.json(user);
-
-
-})
 
 router.post("/EditPost", function (req, res) {
     query = { _id: ObjectId(req.body.IDPost) }

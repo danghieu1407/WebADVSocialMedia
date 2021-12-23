@@ -33,7 +33,7 @@ passport.use(new GoogleStrategy({
                         .then(user => done(null, user))
                         .catch(err => done(err, null));
                 } else {
-                    return done(null, false, { message: 'Tài khoản không tồn tại' })
+                    return done(null, false, req.flash('error','Tài khoản không tồn tại' ))
                 }
 
             })
