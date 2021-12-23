@@ -8,7 +8,7 @@
             </div>
             <div>
                 <h6>
-                    <i class="fas fa-arrow-up text-success pr-1"></i> upload a photo
+                    <i id="uploadimage" class="fas fa-arrow-up text-success pr-1"></i> upload a photo
                 </h6>
             </div>
             <div>
@@ -33,12 +33,11 @@
                 </div>
                 <div class="pl-2 pt-1 ">
                     <h6 class="name">
-                        <a href="/Wall/<%= post[i].user.authId%>">
+                        <a href="">
                             <%= post[i].user.name%>
                         </a>
                     </h6>
-
-                </div>
+               </div>
 
             </div>
             <hr>
@@ -52,8 +51,9 @@
                 <div>
                     <i class="fa fa-heart"></i> Like
                 </div>
-                <div>
-                    <i class="fa fa-comment"></i> Comments
+                <div data-id="<%= post[i]._id%>" class= "OpenCommentModal">
+                    <i class="fa fa-comment"></i>
+                    Comments
                 </div>
 
             </div>
@@ -61,4 +61,5 @@
         </div>
 
         <%}%>
+        
 </div>
