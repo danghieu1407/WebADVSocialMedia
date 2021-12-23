@@ -129,7 +129,7 @@ $(document).ready(function() {
 let IDPost;
 /*Comment Bài Viết */
 $(document).ready(function() {
-    $(".OpenCommentModal").on("click", (event) => {
+    $(document).on("click",".OpenCommentModal", (event) => {
         event.preventDefault();
         IDPost = $(event.target).data('id');
         $("#CommentModal").modal("show");
@@ -224,6 +224,36 @@ $(document).ready(function() {
         })
     });
 })
+
+
+/*Load Thêm Bài Viết */
+$(document).ready(function () {
+    $("body").on('click', '#LoadMoreEvent', function (event) {
+        event.preventDefault();
+        var limit = 10;
+        $.ajax({
+            url: "/LoadMoreEvent",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ limit: limit }),
+            success: function (data) {
+                let list  = document.getElementById("CollectionDiv");
+                data.forEach(data_element=>{
+                    let OldDiv = document.querySelector('.box1');
+                    let newDiv = OldDiv.cloneNode(true);
+                    newDiv.querySelector('.namePage').innerHTML = data_element.user.name;;
+                    newDiv.querySelector('.namePage').setAttribute('href', `/PageOfUser?authId=${data_element.user.authId}`);
+                    newDiv.querySelector('.content').innerHTML = data_element.content;
+                    newDiv.querySelector('.avt').src = data_element.user.avatar;
+                    newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
+                    list.appendChild(newDiv);
+                })
+            }
+
+        })
+    })
+})
+
 
 
 

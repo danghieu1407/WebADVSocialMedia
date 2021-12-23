@@ -101,19 +101,16 @@ router.post('/login', (req, res, next) => {
 
 
 
-
+let skip;
 router.get('/', isLoggedIn, (req, res, next) => {
     // res.sendFile(__dirname + "/Pages/index");
-
-
+    skip =10;
     if (!req.user) {
         userTDTU = tempcc
 
     } else {
         userTDTU = req.user;
     }
-    /*userTDTU là user hiện tại đang login */
-    /*Do 1 bài post thì phải cần tên và ảnh, nhưng post chỉ chứa ID nên phải gắn 2 table lại với nhau*/
     Post.aggregate([{
         $lookup: {
             from: "usertdtus",
@@ -123,13 +120,15 @@ router.get('/', isLoggedIn, (req, res, next) => {
         }
     }, { "$unwind": "$user" },
     { $sort: { _id: -1 } },
+    { $limit: 10 },
     ]).then((result) => {
         post = result;
-        res.render('./Pages/index', { user: userTDTU, post: post });
+        res.render('./Pages/index', { user: userTDTU, post: result });
     }).catch((error) => {
         console.log(error);
     });
 });
+
 
 router.post('/', isLoggedIn, (req, res, next) => {
     new Post({
@@ -148,31 +147,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 
 });
-router.get('/loadmore', isLoggedIn, (req, res, next) => {
-    if (!req.user) {
-        userTDTU = tempcc
 
-    } else {
-        userTDTU = req.user;
-    }
-    /*userTDTU là user hiện tại đang login */
-    /*Do 1 bài post thì phải cần tên và ảnh, nhưng post chỉ chứa ID nên phải gắn 2 table lại với nhau*/
-    Post.aggregate([{
-        $lookup: {
-            from: "usertdtus",
-            localField: "creator",
-            foreignField: "authId",
-            as: "user"
-        }
-    }, { "$unwind": "$user" },
-    { $sort: { _id: -1 } },
-    ]).then((result) => {
-        post = result;
-        res.json({ user: userTDTU, post: post });
-    }).catch((error) => {
-        console.log(error);
-    });
-})
 
 router.get('/logout', function (req, res, next) {
     if (req.session) {
@@ -203,19 +178,7 @@ router.post('/DeletePost', function (req, res) {
     })
 });
 
-// router.post("/loadmore", async(req, res) => {
-//     var limit = 2;
-//     var startFrom = parseInt(request.fields.startFrom);
 
-//     var user = await db.collection('posts').find({})
-//         .sort({ 'id': -1 })
-//         .skip(startFrom)
-//         .limit(limit)
-//         .toArray();
-//     result.json(user);
-
-
-// })
 
 router.post("/EditPost", function(req, res) {
     query = { _id: ObjectId(req.body.IDPost) }
@@ -230,7 +193,7 @@ router.post("/EditPost", function(req, res) {
 
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
 
-    Post.find({ creator: userTDTU.authId }).sort({ _id: -1 }, ).then((result) => {
+    Post.find({ creator: userTDTU.authId }).sort({ _id: -1 }).limit(10).then((result) => {
         res.render('./Pages/UserProfile', { user: userTDTU, post: result });
     })
 
@@ -330,9 +293,10 @@ router.post("/DeleteComment", function (req, res) {
 
 
 router.get("/PageOfUser", isLoggedIn, (req, res, next) => {
+    skip =10;
     IdOtherUser = req.query.authId;
     if (userTDTU.authId == IdOtherUser) {
-        Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => {
+        Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).limit(10).then((result) => {
             res.render('./Pages/UserProfile', { user: userTDTU, post: result });
         })
     }
@@ -340,7 +304,7 @@ router.get("/PageOfUser", isLoggedIn, (req, res, next) => {
        UserTDT.findOne({authId :IdOtherUser},(err,userother)=>{
               if(err) console.log(err);
               else{
-                Post.find({ creator: IdOtherUser }).sort({ _id: -1 },).then((post) => {
+                Post.find({ creator: IdOtherUser }).sort({ _id: -1 },).limit(10).then((post) => {
                  res.render('./Pages/PageUser', { userother: userother, post: post ,user:userTDTU });
                 })
               }
@@ -348,6 +312,29 @@ router.get("/PageOfUser", isLoggedIn, (req, res, next) => {
     }
 
 })
+
+router.post("/LoadMoreEvent", (req, res) => 
+{
+   
+    Post.aggregate([{
+        $lookup: {
+            from: "usertdtus",
+            localField: "creator",
+            foreignField: "authId",
+            as: "user"
+        }
+    }, { "$unwind": "$user" },
+    { $sort: { _id: -1 } },
+    {$skip:skip},
+    { $limit:10 },
+    ]).then((result) => {
+        skip = skip + 10;
+       res.send(result);
+    }).catch((error) => {
+        console.log(error);
+    });
+})
+
 
 
 function isLoggedIn(req, res, next) {
