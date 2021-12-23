@@ -39,10 +39,10 @@ $(document).ready(function () {
 
 /**Xóa Bài Viết */
 $(document).ready(function () {
-    $(document).on("click", "btn-delete",(event) => {
+    $(document).on("click","#btn-delete",(event) => {
         event.preventDefault();
         const id = $(event.target).data('id');
-        console.log(id);
+        console.log("Đã xóa bài viết tại hàm main.js");
         $.ajax({
             url: "/DeletePost",
             method: 'POST',

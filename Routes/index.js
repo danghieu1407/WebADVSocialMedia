@@ -9,7 +9,7 @@ const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
 var formidable = require('formidable')
-
+var flash = require('connect-flash');
 const emailValidator = require('email-validator')
 router.use(session({
     resave: false,
@@ -17,7 +17,7 @@ router.use(session({
     secret: 'SECRET'
 }));
 
-
+router.use(flash())
 router.use(passport.initialize());
 router.use(passport.session());
 router.use(bodyParser.json())
@@ -37,7 +37,8 @@ router.get('/login', (req, res, next) => {
 
     res.render('Layout/login', { layout: `./Layout/login` })
 })
-temp = false // cai lon nay dung de xac nhan cho cai ham isLoggedIn
+temp = false // Cái này trả về true cho hàm isLoggedIn
+
 
 let tempcc;
 
@@ -63,13 +64,11 @@ router.post('/login', (req, res, next) => {
                 } else if (passwordbt !== user.password) {
                     error = 'Mật khẩu không chính xác'
                 }
-                console.log(error)
                 if (error.length > 0) {
                     res.render('./Layout/login', {
                         layout: `./Layout/login`,
-                        errorMessage: error
+                        error: error
                     })
-
                 } else {
                     temp = true
                     body.authId = user.authId
@@ -97,9 +96,11 @@ router.post('/login', (req, res, next) => {
 router.get('/', isLoggedIn, (req, res, next) => {
 
     if (!req.user) {
+
         userTDTU = tempcc
 
     } else {
+
         userTDTU = req.user;
     }
     /*userTDTU là user hiện tại đang login */
@@ -126,7 +127,8 @@ router.post('/', isLoggedIn, (req, res, next) => {
         creator: userTDTU.authId,
         content: req.body.content,
         create_at: new Date(),
-        update_at: new Date()
+        update_at: new Date(),
+        image: req.body.image
     }).save(function(err, data) {
         if (err) return console.error(err);
 
@@ -137,6 +139,31 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 
 });
+router.get('/loadmore', isLoggedIn, (req, res, next)=>{
+    if (!req.user) {
+        userTDTU = tempcc
+
+    } else {
+        userTDTU = req.user;
+    }
+    /*userTDTU là user hiện tại đang login */
+    /*Do 1 bài post thì phải cần tên và ảnh, nhưng post chỉ chứa ID nên phải gắn 2 table lại với nhau*/
+    Post.aggregate([{
+            $lookup: {
+                from: "usertdtus",
+                localField: "creator",
+                foreignField: "authId",
+                as: "user"
+            }
+        }, { "$unwind": "$user" },
+        { $sort: { _id: -1 } },
+    ]).then((result) => {
+        post = result;
+        res.json({ user: userTDTU, post: post });
+    }).catch((error) => {
+        console.log(error);
+    });
+})
 
 router.get('/logout', function(req, res, next) {
     if (req.session) {
