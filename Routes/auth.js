@@ -3,6 +3,10 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var User = require('../Models/UserModel');
 var express = require('express');
 var router = express.Router();
+var flash = require('connect-flash');
+
+router.use(flash())
+
 passport.use(new GoogleStrategy({
         clientID: "609305227636-5lp0eotrvf8g52aldfb379ppr3dsmeib.apps.googleusercontent.com",
         clientSecret: "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",
@@ -33,7 +37,8 @@ passport.use(new GoogleStrategy({
                         .then(user => done(null, user))
                         .catch(err => done(err, null));
                 } else {
-                    return done(null, false, { message: 'Tài khoản không tồn tại' })
+                    tempcc = 'Tài khoản không tồn tại'
+                    return done(null, false, { message: tempcc })
                 }
 
             })
@@ -42,6 +47,7 @@ passport.use(new GoogleStrategy({
             });
     }
 ));
+
 passport.serializeUser(function(user, done) {
     done(null, user._id);
 });
@@ -57,6 +63,6 @@ router.get('/google', passport.authenticate('google', {
         'https://www.googleapis.com/auth/userinfo.email'
     ]
 }));
-router.get('/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login', failureFlash: true }));
+router.get('/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login', failureFlash: { message: 'Tai khoan khong ton tao' } }));
 
 module.exports = router;
