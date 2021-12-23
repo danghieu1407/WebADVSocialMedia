@@ -42,15 +42,14 @@ const { Passport } = require('passport');
 
 let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
 let post; /*Lấy tất cả bài post trong moongose */
-// Daehyeu router upload hinh anh 
+
 
 // Quài Bẻo thêm dô từ khúc này
 router.get('/login', (req, res, next) => {
 
     res.render('Layout/login', { layout: `./Layout/login` })
 })
-temp = false // Cái này trả về true cho hàm isLoggedIn
-
+temp = false // cai lon nay dung de xac nhan cho cai ham isLoggedIn
 
 let tempcc;
 
@@ -106,12 +105,11 @@ router.post('/login', (req, res, next) => {
 router.get('/', isLoggedIn, (req, res, next) => {
     // res.sendFile(__dirname + "/Pages/index");
 
-    if (!req.user) {
 
+    if (!req.user) {
         userTDTU = tempcc
 
     } else {
-
         userTDTU = req.user;
     }
     /*userTDTU là user hiện tại đang login */
@@ -205,11 +203,23 @@ router.post('/DeletePost', function (req, res) {
     })
 });
 
+// router.post("/loadmore", async(req, res) => {
+//     var limit = 2;
+//     var startFrom = parseInt(request.fields.startFrom);
+
+//     var user = await db.collection('posts').find({})
+//         .sort({ 'id': -1 })
+//         .skip(startFrom)
+//         .limit(limit)
+//         .toArray();
+//     result.json(user);
 
 
-router.post("/EditPost", function (req, res) {
+// })
+
+router.post("/EditPost", function(req, res) {
     query = { _id: ObjectId(req.body.IDPost) }
-    Post.findOneAndUpdate(query, { $set: { content: req.body.content, update_at: new Date() } }, { new: true }, function (err, result) {
+    Post.findOneAndUpdate(query, { $set: { content: req.body.content, update_at: new Date() } }, { new: true }, function(err, result) {
         if (err) console.log(err);
         else {
             res.send(result);
@@ -220,7 +230,7 @@ router.post("/EditPost", function (req, res) {
 
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
 
-    Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => {
+    Post.find({ creator: userTDTU.authId }).sort({ _id: -1 }, ).then((result) => {
         res.render('./Pages/UserProfile', { user: userTDTU, post: result });
     })
 
@@ -236,8 +246,7 @@ router.post("/UserProfile", isLoggedIn, (req, res, next) => {
     UserTDT.findOneAndUpdate(query, { $set: data }, { new: true }, (err, doc) => {
         if (err) {
             console.log("Something wrong when updating data!");
-        }
-        else {
+        } else {
             userTDTU = doc;
             Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => {
                 res.render('./Pages/UserProfile', { user: userTDTU, post: result });
@@ -277,7 +286,7 @@ router.post('/adminmanager', isLoggedIn, (req, res) => {
 
 
 router.post('/loadComment', (req, res) => {
-    Comment.find({ IdOfPost: req.body.IDPost }).sort({ _id: 1 },).then((result) => {
+    Comment.find({ IdOfPost: req.body.IDPost }).sort({ _id: 1 }, ).then((result) => {
         UserTDT.find({}, (err, doc) => {
             if (err) {
                 console.log(err);

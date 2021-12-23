@@ -1,7 +1,6 @@
-
 /*Đăng Nội Dung */
-$(document).ready(function () {
-    $('#PostContent').on("submit", function (event) {
+$(document).ready(function() {
+    $('#PostContent').on("submit", function(event) {
         event.preventDefault();
         let authID = $('#authID').val();
         let content = $('#content').val();
@@ -12,7 +11,7 @@ $(document).ready(function () {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ authID: authID, content: content }),
-            success: function (data) {
+            success: function(data) {
                 console.log(data);
                 $('#content').trigger("reset");
 
@@ -34,8 +33,10 @@ $(document).ready(function () {
             }
         })
     });
+
 });
 
+<<<<<<< HEAD
 // $(document).ready(function () {
 //     $.ajax({
 //         url: "/loadmore",
@@ -62,21 +63,53 @@ $(document).ready(function () {
 //         }
 //     })
 // })
+=======
+$(document).ready(function() {
+    $.ajax({
+        url: "/loadmore",
+        method: 'GET',
+        contentType: 'application/json',
+        success: function(data) {
+
+            let content = data.post.content;
+            let name = data.user.name;
+            let avatar = data.user.avatar;
+            console.log(data);
+            for (var i = 0; i < data.post.length; i++) {
+                let olddiv = document.querySelector('.box1');
+                let newdiv = olddiv.cloneNode(true);
+                let list = document.getElementById('CollectionDiv');
+                list.insertBefore(newdiv, list.childNodes[0]);
+                newDiv.querySelector('.name').innerHTML = name;
+                newDiv.querySelector('.content').innerHTML = content;
+                newdiv.querySelector('.avt').scr = avatar;
+                document.getElementsByClassName("box1")[0].id = data.post._id;
+                $('#CollectionDiv').append(newdiv)
+            }
+
+        }
+    })
+})
+>>>>>>> d8d6ff179965073fd13d75aae2291aa38814199a
 
 
 
 /**Xóa Bài Viết */
+<<<<<<< HEAD
 $(document).ready(function () {
+=======
+$(document).ready(function() {
+>>>>>>> d8d6ff179965073fd13d75aae2291aa38814199a
     $(document).on("click", "#btn-delete", (event) => {
         event.preventDefault();
         const id = $(event.target).data('id');
-        console.log("Đã xóa bài viết tại hàm main.js");
+        console.log(id);
         $.ajax({
             url: "/DeletePost",
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ IDPost: id }),
-            success: function (data) {
+            success: function(data) {
                 let id = data.IDPost;
                 console.log(id);
                 let Div = document.getElementById(id);
@@ -87,7 +120,7 @@ $(document).ready(function () {
 })
 
 /**Sửa bài viết */
-$(document).ready(function () {
+$(document).ready(function() {
     $(".btn-edit").on("click", (event) => {
         event.preventDefault();
         const button_edit = event.target;
@@ -111,7 +144,7 @@ $(document).ready(function () {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ IDPost: id, content: content }),
-            success: function (data) {
+            success: function(data) {
                 console.log(data)
                 let Div = document.getElementById(data._id);
                 Div.querySelector('.content').innerHTML = content;
@@ -126,7 +159,7 @@ $(document).ready(function () {
 
 let IDPost;
 /*Comment Bài Viết */
-$(document).ready(function () {
+$(document).ready(function() {
     $(".OpenCommentModal").on("click", (event) => {
         event.preventDefault();
         IDPost = $(event.target).data('id');
@@ -136,7 +169,7 @@ $(document).ready(function () {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ IDPost: IDPost }),
-            success: function (data) {
+            success: function(data) {
                 let datacmt = data.data;
                 let datauser = data.user;
                 let list = document.getElementById('CommentList');
@@ -178,7 +211,7 @@ $(document).ready(function () {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ IDPost: IDPost, authID: authID, comment: comment }),
-            success: function (data) {
+            success: function(data) {
                 let list = document.getElementById('CommentList');
                 let OldDiv = document.querySelector('.ElementComment');
                 let newDiv = OldDiv.cloneNode(true);
@@ -197,7 +230,7 @@ $(document).ready(function () {
 
     })
 
-    $('#CommentModal').on('hidden.bs.modal', function () {
+    $('#CommentModal').on('hidden.bs.modal', function() {
         let list = document.getElementById('CommentList');
         let Div = document.querySelector(".ElementComment");
         let newDiv = Div.cloneNode(true);
@@ -209,21 +242,25 @@ $(document).ready(function () {
         event.preventDefault();
         let id = event.target.dataset.id;
         console.log(id);
-        console.log()
+
         $.ajax({
             url: "/DeleteComment",
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ IDComment: id }),
-            success: function (data) {
+            success: function(data) {
                 let Div = document.getElementById(id);
                 Div.remove();
             }
         })
     });
+<<<<<<< HEAD
 })
 
 
 
 
 
+=======
+})
+>>>>>>> d8d6ff179965073fd13d75aae2291aa38814199a
