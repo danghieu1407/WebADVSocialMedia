@@ -18,12 +18,14 @@
             </div>
         </div>
         <input type="text" id="authId" name="authId" value="<%user.authId%>" hidden="true">
-        <textarea name="content" id="content" cols="3" rows="3" class="form-control postindex" placeholder="Write Something...." required></textarea>
+        <textarea name="content" id="content" cols="3" rows="3" class="form-control postindex"
+            placeholder="Write Something...." required></textarea>
         <hr>
         <input type="submit" value="Đăng bài viết" id="bthPost" class="btn btn-info pull-right">
     </form>
-
 </div>
+
+
 <div id="CollectionDiv">
     <% for (var i=0; i <post.length; i++) { %>
         <div class="box1" id="<%= post[i]._id%>">
@@ -32,37 +34,31 @@
                     <img class="avt" src="<%= post[i].user.avatar%>" alt="">
                 </div>
                 <div class="pl-2 pt-1 ">
-                    <h6 class="name" >
-                        <a href="/PageOfUser?authId=<%=post[i].user.authId%>">
+                    <h6 class="name">
+                        <a class="namePage" href="/PageOfUser?authId=<%=post[i].user.authId%>">
                             <%= post[i].user.name%>
                         </a>
                     </h6>
-               </div>
-
+                </div>
             </div>
             <hr>
             <p id="content" class="text-muted " name="content">
-                <h6 class="content">
-                    <%= post[i].content%>
-                </h6>
+            <h6 class="content">
+                <%= post[i].content%>
+            </h6>
             </p>
             <hr>
             <div class="d-flex justify-content-around">
                 <div>
                     <i class="fa fa-heart"></i> Like
                 </div>
-                <div data-id="<%= post[i]._id%>" class= "OpenCommentModal">
+                <div data-id="<%= post[i]._id%>" class="OpenCommentModal">
                     <i class="fa fa-comment"></i>
                     Comments
                 </div>
-
             </div>
-
         </div>
-
         <%}%>
-<<<<<<< HEAD
-=======
-        
->>>>>>> d8d6ff179965073fd13d75aae2291aa38814199a
 </div>
+
+
