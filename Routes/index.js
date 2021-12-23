@@ -183,7 +183,7 @@ router.get('/logout', function(req, res, next) {
 router.post('/DeletePost', function(req, res) {
     console.log(req.body.IDPost);
     query = { _id: ObjectId((req.body.IDPost)) }
-    console.log(query)
+
     Post.deleteOne(query, function(err, result) {
         if (err) console.log(err);
         else {
