@@ -57,6 +57,6 @@ router.get('/google', passport.authenticate('google', {
         'https://www.googleapis.com/auth/userinfo.email'
     ]
 }));
-router.get('/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login', failureFlash: true }));
+router.get('/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login' }));
 
 module.exports = router;

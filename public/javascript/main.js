@@ -39,7 +39,7 @@ $(document).ready(function () {
 
 /**Xóa Bài Viết */
 $(document).ready(function () {
-    $(".btn-delete").on("click", (event) => {
+    $(document).on("click", "btn-delete",(event) => {
         event.preventDefault();
         const id = $(event.target).data('id');
         console.log(id);
