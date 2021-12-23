@@ -9,7 +9,7 @@ const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
 var formidable = require('formidable')
-var flash = require('connect-flash');
+
 const emailValidator = require('email-validator')
 router.use(session({
     resave: false,
@@ -17,7 +17,7 @@ router.use(session({
     secret: 'SECRET'
 }));
 
-router.use(flash())
+
 router.use(passport.initialize());
 router.use(passport.session());
 router.use(bodyParser.json())
@@ -37,8 +37,7 @@ router.get('/login', (req, res, next) => {
 
     res.render('Layout/login', { layout: `./Layout/login` })
 })
-temp = false // Cái này trả về true cho hàm isLoggedIn
-
+temp = false // cai lon nay dung de xac nhan cho cai ham isLoggedIn
 
 let tempcc;
 
@@ -64,11 +63,13 @@ router.post('/login', (req, res, next) => {
                 } else if (passwordbt !== user.password) {
                     error = 'Mật khẩu không chính xác'
                 }
+                console.log(error)
                 if (error.length > 0) {
                     res.render('./Layout/login', {
                         layout: `./Layout/login`,
-                        error: error
+                        errorMessage: error
                     })
+
                 } else {
                     temp = true
                     body.authId = user.authId
@@ -96,11 +97,9 @@ router.post('/login', (req, res, next) => {
 router.get('/', isLoggedIn, (req, res, next) => {
 
     if (!req.user) {
-
         userTDTU = tempcc
 
     } else {
-
         userTDTU = req.user;
     }
     /*userTDTU là user hiện tại đang login */
