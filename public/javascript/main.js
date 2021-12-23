@@ -36,14 +36,13 @@ $(document).ready(function () {
     });
 });
 
-<<<<<<< HEAD
 // $(document).ready(function () {
 //     $.ajax({
 //         url: "/loadmore",
 //         method: 'GET',
 //         contentType: 'application/json',
 //         success: function (data) {
-            
+
 //             let content = data.post.content;
 //             let name = data.user.name;
 //             let avatar = data.user.avatar;
@@ -65,12 +64,10 @@ $(document).ready(function () {
 // })
 
 
-=======
->>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
 
 /**Xóa Bài Viết */
 $(document).ready(function () {
-    $(document).on("click","#btn-delete",(event) => {
+    $(document).on("click", "#btn-delete", (event) => {
         event.preventDefault();
         const id = $(event.target).data('id');
         console.log("Đã xóa bài viết tại hàm main.js");
@@ -169,7 +166,7 @@ $(document).ready(function () {
         })
 
 
-     
+
     });
 
     $("#CommentModal").on("submit", (event) => {
@@ -208,7 +205,7 @@ $(document).ready(function () {
         list.appendChild(newDiv);
     })
 
-    $(document).on("click", ".DeleteComment",(event) => {
+    $(document).on("click", ".DeleteComment", (event) => {
         event.preventDefault();
         let id = event.target.dataset.id;
         console.log(id);

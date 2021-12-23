@@ -6,21 +6,11 @@
             <div>
                 <h6><i class="fas fa-edit text-primary pr-1"></i>Share an update</h6>
             </div>
-<<<<<<< HEAD
-
-                    <h6>
-                        <i class="fas fa-arrow-up text-success pr-1"></i> Upload
-
-                    </h6>
-                
-         
-=======
             <div>
                 <h6>
                     <i class="fas fa-arrow-up text-success pr-1"></i> upload a photo
                 </h6>
             </div>
->>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
             <div>
                 <h6>
                     <i class="fas fa-book-open text-info pr-1"></i> write an article
@@ -43,8 +33,8 @@
                     <img class="avt" src="<%= post[i].user.avatar%>" alt="">
                 </div>
                 <div class="pl-2 pt-1 ">
-                    <h6 class="name">
-                        <a href="">
+                    <h6 class="name" >
+                        <a href="/PageOfUser?authId=<%=post[i].user.authId%>">
                             <%= post[i].user.name%>
                         </a>
                     </h6>
@@ -72,8 +62,4 @@
         </div>
 
         <%}%>
-<<<<<<< HEAD
-
-=======
->>>>>>> f2d36f41b7e79331f4524be78a62bc2a1bcd06fb
 </div>
