@@ -20,10 +20,10 @@ router.use(session({
 }));
 
 var storage = multer.diskStorage({
-    destination: function(req, file, callback) {
+    destination: function (req, file, callback) {
         callback(null, './uploads');
     },
-    filename: function(req, file, callback) {
+    filename: function (req, file, callback) {
         callback(null, file.originalname);
     }
 });
@@ -54,7 +54,7 @@ router.get('/login', (req, res, next) => {
             if (user) {
 
                 error = user.message
-                Error.deleteOne({ 'errorId': '01' }, function(err, result) {
+                Error.deleteOne({ 'errorId': '01' }, function (err, result) {
                     if (err) throw err;
                 });
             }
@@ -134,15 +134,15 @@ router.get('/', isLoggedIn, (req, res, next) => {
         userTDTU = req.user;
     }
     Post.aggregate([{
-            $lookup: {
-                from: "usertdtus",
-                localField: "creator",
-                foreignField: "authId",
-                as: "user"
-            }
-        }, { "$unwind": "$user" },
-        { $sort: { _id: -1 } },
-        { $limit: 10 },
+        $lookup: {
+            from: "usertdtus",
+            localField: "creator",
+            foreignField: "authId",
+            as: "user"
+        }
+    }, { "$unwind": "$user" },
+    { $sort: { _id: -1 } },
+    { $limit: 10 },
     ]).then((result) => {
         post = result;
         res.render('./Pages/index', { user: userTDTU, post: result });
@@ -159,7 +159,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
         create_at: new Date(),
         update_at: new Date(),
         image: req.body.image
-    }).save(function(err, data) {
+    }).save(function (err, data) {
         if (err) return console.error(err);
 
         result = { post: data, user: userTDTU };
@@ -171,10 +171,10 @@ router.post('/', isLoggedIn, (req, res, next) => {
 });
 
 
-router.get('/logout', function(req, res, next) {
+router.get('/logout', function (req, res, next) {
     if (req.session) {
         // delete session object
-        req.session.destroy(function(err) {
+        req.session.destroy(function (err) {
             if (err) {
                 return next(err);
             } else {
@@ -186,13 +186,13 @@ router.get('/logout', function(req, res, next) {
 });
 
 
-router.post('/DeletePost', function(req, res) {
+router.post('/DeletePost', function (req, res) {
 
     query = { _id: ObjectId((req.body.IDPost)) }
-    Post.deleteOne(query, function(err, result) {
+    Post.deleteOne(query, function (err, result) {
         if (err) console.log(err);
         else {
-            Comment.deleteMany({ IdOfPost: ObjectId((req.body.IDPost)) }, function(err, result) {
+            Comment.deleteMany({ IdOfPost: ObjectId((req.body.IDPost)) }, function (err, result) {
                 if (err) console.log(err);
                 res.send(req.body);
             });
@@ -202,9 +202,9 @@ router.post('/DeletePost', function(req, res) {
 
 
 
-router.post("/EditPost", function(req, res) {
+router.post("/EditPost", function (req, res) {
     query = { _id: ObjectId(req.body.IDPost) }
-    Post.findOneAndUpdate(query, { $set: { content: req.body.content, update_at: new Date() } }, { new: true }, function(err, result) {
+    Post.findOneAndUpdate(query, { $set: { content: req.body.content, update_at: new Date() } }, { new: true }, function (err, result) {
         if (err) console.log(err);
         else {
             res.send(result);
@@ -233,7 +233,7 @@ router.post("/UserProfile", isLoggedIn, (req, res, next) => {
             console.log("Something wrong when updating data!");
         } else {
             userTDTU = doc;
-            Post.find({ creator: userTDTU.authId }).sort({ _id: -1 }, ).then((result) => {
+            Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).then((result) => {
                 res.render('./Pages/UserProfile', { user: userTDTU, post: result });
             })
         }
@@ -302,7 +302,7 @@ router.post('/adminmanager', isLoggedIn, (req, res) => {
 
 
 router.post('/loadComment', (req, res) => {
-    Comment.find({ IdOfPost: req.body.IDPost }).sort({ _id: 1 }, ).then((result) => {
+    Comment.find({ IdOfPost: req.body.IDPost }).sort({ _id: 1 },).then((result) => {
         UserTDT.find({}, (err, doc) => {
             if (err) {
                 console.log(err);
@@ -321,7 +321,7 @@ router.post("/SendComment", (req, res) => {
         Commentor: req.body.authID,
         create_at: new Date(),
         update_at: new Date()
-    }).save(function(err, data) {
+    }).save(function (err, data) {
         if (err) { return console.error(err); } else {
             UserTDT.findOne({ authId: req.body.authID }, (err, doc) => {
                 if (err) { return console.error(err); }
@@ -332,9 +332,9 @@ router.post("/SendComment", (req, res) => {
     });
 })
 
-router.post("/DeleteComment", function(req, res) {
+router.post("/DeleteComment", function (req, res) {
 
-    Comment.findOneAndDelete({ _id: ObjectId(req.body.IDComment) }, function(err, result) {
+    Comment.findOneAndDelete({ _id: ObjectId(req.body.IDComment) }, function (err, result) {
         if (err) console.log(err);
         else {
             res.send(req.body);
@@ -347,14 +347,14 @@ router.get("/PageOfUser", isLoggedIn, (req, res, next) => {
     skip = 10;
     IdOtherUser = req.query.authId;
     if (userTDTU.authId == IdOtherUser) {
-        Post.find({ creator: userTDTU.authId }).sort({ _id: -1 }, ).limit(10).then((result) => {
+        Post.find({ creator: userTDTU.authId }).sort({ _id: -1 },).limit(10).then((result) => {
             res.render('./Pages/UserProfile', { user: userTDTU, post: result });
         })
     } else {
         UserTDT.findOne({ authId: IdOtherUser }, (err, userother) => {
             if (err) console.log(err);
             else {
-                Post.find({ creator: IdOtherUser }).sort({ _id: -1 }, ).limit(10).then((post) => {
+                Post.find({ creator: IdOtherUser }).sort({ _id: -1 },).limit(10).then((post) => {
                     res.render('./Pages/PageUser', { userother: userother, post: post, user: userTDTU });
                 })
             }
@@ -365,7 +365,9 @@ router.get("/PageOfUser", isLoggedIn, (req, res, next) => {
 
 router.post("/LoadMoreEvent", (req, res) => {
 
-    Post.aggregate([{
+    let code = req.body.code
+    if (code == 1) {
+        Post.aggregate([{
             $lookup: {
                 from: "usertdtus",
                 localField: "creator",
@@ -376,12 +378,29 @@ router.post("/LoadMoreEvent", (req, res) => {
         { $sort: { _id: -1 } },
         { $skip: skip },
         { $limit: 10 },
-    ]).then((result) => {
-        skip = skip + 10;
-        res.send(result);
-    }).catch((error) => {
-        console.log(error);
-    });
+        ]).then((result) => {
+            skip = skip + 10;
+            res.send({result: result,code:1});
+        }).catch((error) => {
+            console.log(error);
+        });
+    }else if(code==2)
+    {
+        let userotherIdforLoadmore = req.body.id
+        UserTDT.findOne({ authId: userotherIdforLoadmore }, (err, userother) => {
+            if (err) console.log(err);
+            else {
+                Post.find({ creator: IdOtherUser })
+                .sort({ _id: -1 })
+                .skip(skip)
+                .limit(10)
+                .then((post) => {
+                    res.send({ userother: userother, post: post,});
+                })
+            }
+        })
+    }
+
 })
 
 

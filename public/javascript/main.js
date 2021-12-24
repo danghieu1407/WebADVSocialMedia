@@ -1,6 +1,6 @@
 /*Đăng Nội Dung */
-$(document).ready(function() {
-    $('#PostContent').on("submit", function(event) {
+$(document).ready(function () {
+    $('#PostContent').on("submit", function (event) {
         event.preventDefault();
         let authID = $('#authID').val();
         let content = $('#content').val();
@@ -11,7 +11,7 @@ $(document).ready(function() {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ authID: authID, content: content }),
-            success: function(data) {
+            success: function (data) {
                 console.log(data);
                 $('#content').trigger("reset");
 
@@ -68,7 +68,7 @@ $(document).ready(function() {
 
 /**Xóa Bài Viết */
 
-$(document).ready(function() {
+$(document).ready(function () {
     $(document).on("click", "#btn-delete", (event) => {
         event.preventDefault();
         const id = $(event.target).data('id');
@@ -78,7 +78,7 @@ $(document).ready(function() {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ IDPost: id }),
-            success: function(data) {
+            success: function (data) {
                 let id = data.IDPost;
                 console.log(id);
                 let Div = document.getElementById(id);
@@ -89,7 +89,7 @@ $(document).ready(function() {
 })
 
 /**Sửa bài viết */
-$(document).ready(function() {
+$(document).ready(function () {
     $(".btn-edit").on("click", (event) => {
         event.preventDefault();
         const button_edit = event.target;
@@ -113,7 +113,7 @@ $(document).ready(function() {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ IDPost: id, content: content }),
-            success: function(data) {
+            success: function (data) {
                 console.log(data)
                 let Div = document.getElementById(data._id);
                 Div.querySelector('.content').innerHTML = content;
@@ -128,8 +128,8 @@ $(document).ready(function() {
 
 let IDPost;
 /*Comment Bài Viết */
-$(document).ready(function() {
-    $(document).on("click",".OpenCommentModal", (event) => {
+$(document).ready(function () {
+    $(document).on("click", ".OpenCommentModal", (event) => {
         event.preventDefault();
         IDPost = $(event.target).data('id');
         $("#CommentModal").modal("show");
@@ -138,7 +138,7 @@ $(document).ready(function() {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ IDPost: IDPost }),
-            success: function(data) {
+            success: function (data) {
                 let datacmt = data.data;
                 let datauser = data.user;
                 let list = document.getElementById('CommentList');
@@ -180,7 +180,7 @@ $(document).ready(function() {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ IDPost: IDPost, authID: authID, comment: comment }),
-            success: function(data) {
+            success: function (data) {
                 let list = document.getElementById('CommentList');
                 let OldDiv = document.querySelector('.ElementComment');
                 let newDiv = OldDiv.cloneNode(true);
@@ -199,7 +199,7 @@ $(document).ready(function() {
 
     })
 
-    $('#CommentModal').on('hidden.bs.modal', function() {
+    $('#CommentModal').on('hidden.bs.modal', function () {
         let list = document.getElementById('CommentList');
         let Div = document.querySelector(".ElementComment");
         let newDiv = Div.cloneNode(true);
@@ -217,7 +217,7 @@ $(document).ready(function() {
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ IDComment: id }),
-            success: function(data) {
+            success: function (data) {
                 let Div = document.getElementById(id);
                 Div.remove();
             }
@@ -230,27 +230,54 @@ $(document).ready(function() {
 $(document).ready(function () {
     $("body").on('click', '#LoadMoreEvent', function (event) {
         event.preventDefault();
-        var limit = 10;
-        $.ajax({
-            url: "/LoadMoreEvent",
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ limit: limit }),
-            success: function (data) {
-                let list  = document.getElementById("CollectionDiv");
-                data.forEach(data_element=>{
-                    let OldDiv = document.querySelector('.box1');
-                    let newDiv = OldDiv.cloneNode(true);
-                    newDiv.querySelector('.namePage').innerHTML = data_element.user.name;;
-                    newDiv.querySelector('.namePage').setAttribute('href', `/PageOfUser?authId=${data_element.user.authId}`);
-                    newDiv.querySelector('.content').innerHTML = data_element.content;
-                    newDiv.querySelector('.avt').src = data_element.user.avatar;
-                    newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
-                    list.appendChild(newDiv);
-                })
-            }
+        if ($(this).data('code') == 1) {
+            let code = 1
+            $.ajax({
+                url: "/LoadMoreEvent",
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ code: code }),
+                success: function (data) {
+                    let list = document.getElementById("CollectionDiv");
+                    data.result.forEach(data_element => {
+                        let OldDiv = document.querySelector('.box1');
+                        let newDiv = OldDiv.cloneNode(true);
+                        newDiv.querySelector('.namePage').innerHTML = data_element.user.name;;
+                        newDiv.querySelector('.namePage').setAttribute('href', `/PageOfUser?authId=${data_element.user.authId}`);
+                        newDiv.querySelector('.content').innerHTML = data_element.content;
+                        newDiv.querySelector('.avt').src = data_element.user.avatar;
+                        newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
+                        list.appendChild(newDiv);
+                    })
 
-        })
+                }
+            })
+        }
+        else if ($(this).data('code') == 2) {
+            let code = 2
+            let id = $(this).data('id')
+            $.ajax({
+                url: "/LoadMoreEvent",
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ code: code ,id:id}),
+                success: function (data) {
+                    let list = document.getElementById("CollectionDiv");
+                    data.post.forEach(data_element => {
+                        let OldDiv = document.querySelector('.box1');
+                        let newDiv = OldDiv.cloneNode(true);
+                        newDiv.querySelector('.namePage').innerHTML = data.userother.name;;
+                        newDiv.querySelector('.namePage').setAttribute('href', `/PageOfUser?authId=${data.userother.authId}`);
+                        newDiv.querySelector('.content').innerHTML = data_element.content;
+                        newDiv.querySelector('.avt').src = data.userother.avatar;
+                        newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
+                        list.appendChild(newDiv);
+                    })
+
+                }
+            })
+        }
+
     })
 })
 

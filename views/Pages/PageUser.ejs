@@ -62,19 +62,18 @@
         </tr>
 
     </tbody>
-    <button class="btn btn-primary" id="LoadMoreUserProfile">LoadMoreUserProfile</button>
+    <button  data-code="2" data-id="<%=userother.authId%>" class="btn btn-primary" id ="LoadMoreEvent">LoadMoreTaiTrangCanhan</button>
 </table>
-
 <div id="CollectionDiv">
     <h3 class="text-center">Bài Đăng</h3>
     <% for (var i=0; i <post.length; i++) { %>
-        <div class="profilePOST" id="<%= post[i]._id%>">
+        <div class="box1" id="<%= post[i]._id%>">
             <div class="d-flex skfjkk">
                 <div class="lkt40 ">
                     <img class="avt" src="<%=userother.avatar%>" alt="">
                 </div>
                 <div class="pl-2 pt-1 ">
-                    <h6 class="name">
+                    <h6 class="namePage" >
                         <%=userother.name%>
                     </h6>
                 </div>
@@ -91,7 +90,7 @@
                     <i class="fa fa-heart"></i>
                     Like
                 </div>
-                <div class="OpenCommentModal">
+                <div data-id="<%= post[i]._id%>" class="OpenCommentModal">
                     <i class="fa fa-comment"></i>
                     Comments
                 </div>
