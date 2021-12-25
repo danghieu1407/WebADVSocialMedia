@@ -71,8 +71,7 @@ router.get('/login', (req, res, next) => {
 
 
 })
-temp = false // cai lon nay dung de xac nhan cho cai ham isLoggedIn
-
+temp = false
 let tempcc;
 
 
@@ -172,13 +171,15 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 
 router.get('/logout', function(req, res, next) {
+
     if (req.session) {
         // delete session object
         req.session.destroy(function(err) {
+            temp = false
             if (err) {
                 return next(err);
             } else {
-                return res.redirect('/login');
+                return res.redirect('/');
             }
         });
     }
