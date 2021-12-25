@@ -8,7 +8,6 @@ var ObjectId = require('mongodb').ObjectID;
 const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
-var formidable = require('formidable')
 var Error = require('../Models/Error')
 var multer = require('multer')
 
@@ -364,7 +363,7 @@ router.get("/PageOfUser", isLoggedIn, (req, res, next) => {
 })
 
 router.post("/LoadMoreEvent", (req, res) => {
-
+    
     let code = req.body.code
     if (code == 1) {
         Post.aggregate([{
@@ -390,7 +389,7 @@ router.post("/LoadMoreEvent", (req, res) => {
         UserTDT.findOne({ authId: userotherIdforLoadmore }, (err, userother) => {
             if (err) console.log(err);
             else {
-                Post.find({ creator: IdOtherUser })
+                Post.find({ creator: userotherIdforLoadmore })
                 .sort({ _id: -1 })
                 .skip(skip)
                 .limit(10)
