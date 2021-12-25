@@ -213,7 +213,7 @@ router.post("/EditPost", function (req, res) {
 
 
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
-
+    skip = 10
     Post.find({ creator: userTDTU.authId }).sort({ _id: -1 }).limit(10).then((result) => {
         res.render('./Pages/UserProfile', { user: userTDTU, post: result });
     })
@@ -362,8 +362,7 @@ router.get("/PageOfUser", isLoggedIn, (req, res, next) => {
 
 })
 
-router.post("/LoadMoreEvent", (req, res) => {
-    
+router.post("/LoadMoreEvent", (req, res) => {   
     let code = req.body.code
     if (code == 1) {
         Post.aggregate([{

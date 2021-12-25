@@ -229,61 +229,9 @@ $(document).ready(function () {
 
 /*Load Thêm Bài Viết */
 $(document).ready(function () {
-    $("body").on('click', '#LoadMoreEvent', function (event) {
-        event.preventDefault();
-        if ($(this).data('code') == 1) {
-            let code = 1
-            $.ajax({
-                url: "/LoadMoreEvent",
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ code: code }),
-                success: function (data) {
-                    let list = document.getElementById("CollectionDiv");
-                    data.result.forEach(data_element => {
-                        let OldDiv = document.querySelector('.box1');
-                        let newDiv = OldDiv.cloneNode(true);
-                        newDiv.querySelector('.namePage').innerHTML = data_element.user.name;;
-                        newDiv.querySelector('.namePage').setAttribute('href', `/PageOfUser?authId=${data_element.user.authId}`);
-                        newDiv.querySelector('.content').innerHTML = data_element.content;
-                        newDiv.querySelector('.avt').src = data_element.user.avatar;
-                        newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
-                        list.appendChild(newDiv);
-                    })
-
-                }
-            })
-        }
-        else if ($(this).data('code') == 2) {
-            let code = 2
-            let id = $(this).data('id')
-            $.ajax({
-                url: "/LoadMoreEvent",
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ code: code ,id:id}),
-                success: function (data) {
-                    let list = document.getElementById("CollectionDiv");
-                    data.post.forEach(data_element => {
-                        let OldDiv = document.querySelector('.box1');
-                        let newDiv = OldDiv.cloneNode(true);
-                        newDiv.querySelector('.namePage').innerHTML = data.userother.name;;
-                        newDiv.querySelector('.namePage').setAttribute('href', `/PageOfUser?authId=${data.userother.authId}`);
-                        newDiv.querySelector('.content').innerHTML = data_element.content;
-                        newDiv.querySelector('.avt').src = data.userother.avatar;
-                        newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
-                        list.appendChild(newDiv);
-                    })
-
-                }
-            })
-        }
-
-    })
+    
     $(window).on("scroll", function() {
-        var scrollHeight = $(document).height();
-        var scrollPosition = $(window).height() + $(window).scrollTop();
-        if ((scrollHeight - scrollPosition) / scrollHeight === 0) {
+        if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
     
             let code = $(".LoadMoreEvent").data('code');
             if (code== 1) {
