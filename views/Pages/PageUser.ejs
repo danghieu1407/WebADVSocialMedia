@@ -62,9 +62,8 @@
         </tr>
 
     </tbody>
-    <button  data-code="2" data-id="<%=userother.authId%>" class="btn btn-primary" id ="LoadMoreEvent">LoadMoreTaiTrangCanhan</button>
 </table>
-<div id="CollectionDiv">
+<div id="CollectionDiv" data-code="2" data-id="<%=userother.authId%>"  class ="LoadMoreEvent">
     <h3 class="text-center">Bài Đăng</h3>
     <% for (var i=0; i <post.length; i++) { %>
         <div class="box1" id="<%= post[i]._id%>">

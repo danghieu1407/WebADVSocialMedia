@@ -395,6 +395,7 @@ router.post("/LoadMoreEvent", (req, res) => {
                 .skip(skip)
                 .limit(10)
                 .then((post) => {
+                    skip = skip + 10;
                     res.send({ userother: userother, post: post,});
                 })
             }

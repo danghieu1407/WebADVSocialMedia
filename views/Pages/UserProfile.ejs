@@ -85,7 +85,7 @@
         </form>
     </table>
 
-    <div id="CollectionDiv">
+    <div id="CollectionDiv" data-code="2" data-id="<%=user.authId%>"  class ="LoadMoreEvent">
         <h3 class="text-center">Bài Đăng</h3>
         <% for (var i=0; i <post.length; i++) { %>
             <div class="box1" id="<%= post[i]._id%>">
@@ -94,9 +94,10 @@
                         <img class="avt" src="<%=user.avatar%>" alt="">
                     </div>
                     <div class="pl-2 pt-1 ">
-                        <h6 class="name">
+                        <h6 class="namePage" >
                             <%=user.name%>
                         </h6>
+    
                         <a data-id="<%= post[i]._id%>" href="/DeletePost" id="btn-delete">Delete</a>
                         <a data-content="<%= post[i].content%>" data-id="<%= post[i]._id%>" href="/Edit"
                             class="btn-edit">Edit</a>
@@ -114,7 +115,7 @@
                         <i class="fa fa-heart"></i>
                         Like
                     </div>
-                    <div class="OpenCommentModal">
+                    <div data-id="<%= post[i]._id%>" class="OpenCommentModal">
                         <i class="fa fa-comment"></i>
                         Comments
                     </div>
@@ -132,7 +133,6 @@
 <div class="modal fade" id="editPost">
     <div class="modal-dialog">
         <div class="modal-content">
-
             <!-- Modal Header -->
             <div class="modal-header">
                 <h4 class="modal-title">Chỉnh Sửa Bài Viêt</h4>
