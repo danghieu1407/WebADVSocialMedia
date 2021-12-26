@@ -37,6 +37,7 @@ router.use(bodyParser.json())
 var UserTDT = require('../Models/UserModel')
 var Post = require('../Models/Post');
 var Comment = require('../Models/Comment');
+var nontification = require('../Models/nontification')
 const { start } = require('repl');
 const { Passport } = require('passport');
 
@@ -151,6 +152,8 @@ router.get('/', isLoggedIn, (req, res, next) => {
 });
 
 
+
+
 router.post('/', isLoggedIn, (req, res, next) => {
     new Post({
         creator: userTDTU.authId,
@@ -169,6 +172,39 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 });
 
+// router.post('/nontification', (req, res)=>{
+//     console.log(req)
+//     new nontification({
+//         creator: userTDTU.authId,
+//         content: req.body.nontification,
+//         create_at: new Date(),
+//         update_at: new Date(),
+//     }).save(function (err, data) {
+//         if (err) return console.error(err);
+
+//         result = { post: data, user: userTDTU };
+//         res.send(result);
+// })
+// });
+// const io = require('socket.io')(8888)
+// io.on('connection', (socket) => {
+//     Msg.find().then(result => {
+//         socket.emit('output-messages', result)
+//     })
+//     console.log('a user connected');
+//     socket.emit('message', 'Hello world');
+//     socket.on('disconnect', () => {
+//         console.log('user disconnected');
+//     });
+//     socket.on('chatmessage', msg => {
+//         const message = new Msg({ msg });
+//         message.save().then(() => {
+//             io.emit('message', msg)
+//         })
+
+
+//     })
+// });
 
 router.get('/logout', function (req, res, next) {
     if (req.session) {

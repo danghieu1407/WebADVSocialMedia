@@ -64,7 +64,22 @@ $(document).ready(function() {
     })
 })
 */
+window.onload = ()=>{
+    console.log('Mở kết nối tới sever')
+    
+    const socket = io();
 
+    socket.on('connect', ()=>{console.log('đã kết nối thành công')
+    })
+    socket.on('disconnect', ()=>{console.log('đã kết nối thất bại')
+    socket.on('message',m=> {console.log(`đã nhận một tin nhắn:${m}`)})
+})
+}
+
+function appendMessages(message) {
+    const html = `<div>${message}</div>`
+    messages.innerHTML += html
+}
 
 /**Xóa Bài Viết */
 

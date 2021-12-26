@@ -7,7 +7,7 @@ var authRouter = require('./Routes/auth');
 // var UserRouter        = require('./Routes/user');
 var IndexRouter = require('./Routes/index');
 const bp = require('body-parser')
-
+const socketio = require('socket.io')
 
 
 const expressLayouts = require('express-ejs-layouts');
@@ -28,5 +28,15 @@ app.use('/auth', authRouter);
 
 
 const port = process.env.PORT || 8080;
-app.listen(port);
+const httpSever = app.listen(port);
+const io = socketio(httpSever)
+
 console.log("Server started on port" + port);
+
+io.on('connection',client =>{
+    console.log('client connected')
+
+    client.on('disconnect', ()=> console.log(`${client.id} has left`))
+    client.send('hello tui la dang hieu')
+    
+})
