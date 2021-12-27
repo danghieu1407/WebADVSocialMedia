@@ -36,7 +36,17 @@ console.log("Server started on port" + port);
 io.on('connection',client =>{
     console.log('client connected')
 
+<<<<<<< HEAD
     /*client.on('disconnect', ()=> console.log(`${client.id} has left`))
     client.send('hello tui la dang hieu')*/
+=======
+    client.on('disconnect', ()=> console.log(`${client.id} has left`))
+    client.send('hello tui la dang hieu')
+
+    client.on('postnontification',  postnontificationfromsever =>{
+        console.log(postnontificationfromsever)
+        client.broadcast.emit('sendatatouser',postnontificationfromsever )
+    })
+>>>>>>> 7e5131db8781bdbdb6ea0f01439eeac272a9b0b5
     
 })
