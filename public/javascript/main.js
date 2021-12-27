@@ -64,7 +64,22 @@ $(document).ready(function() {
     })
 })
 */
+window.onload = ()=>{
+    console.log('Mở kết nối tới sever')
+    
+    const socket = io();
 
+    socket.on('connect', ()=>{console.log('đã kết nối thành công')
+    })
+    socket.on('disconnect', ()=>{console.log('đã kết nối thất bại')
+    socket.on('message',m=> {console.log(`đã nhận một tin nhắn:${m}`)})
+})
+}
+
+function appendMessages(message) {
+    const html = `<div>${message}</div>`
+    messages.innerHTML += html
+}
 
 /**Xóa Bài Viết */
 
@@ -284,10 +299,56 @@ $(document).ready(function () {
             }
             
         }
-    });
-    
+    }); 
 })
 
+$(document).ready(function () {
+    $("body").on("click", ".OpenDetailNotification", (event) => {
+        event.preventDefault();
+        let content = $(event.target).data("content");
+        let title = $(event.target).data("title");
+        $("#TitleNotification").html(title);
+        $(".ContentNotification").html(content);
+        $("#DetailNotification").modal("show");
+    })
+})
+
+$(document).ready(function () {
+    function getNameFaculy(data) {
+        if(data=="BHLD")
+        {
+            return "Bảo Hộ Lao Động";
+        }
+        else if(data=="PCTHSSV")
+        {
+            return "Phòng Công Tác Học Sinh Sinh Viên";
+        }
+        else if(data=="PDH")
+        {
+            return "Phòng Đại Học"
+        }
+        else if(data=="PSDH")
+        {
+            return "Phòng Sau Đại Học"
+        }
+        else if(data=="ĐTVMT")
+        {
+            return "Phòng điện toán và máy tính"
+        }
+        else if(data=="TDTUEnglish")
+        {
+            return "TDT Creative Language Center"
+        }
+        else if(data=="TTTH")
+        {
+            return "Trung Tâm Tin Học"
+        }
+        else if (data == "SDTC")
+        { 
+            return "Trung tâm đào tạo phát triển xã hội "
+        }
+    }
+})
 
 
 

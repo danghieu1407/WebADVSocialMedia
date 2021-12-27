@@ -37,6 +37,7 @@ router.use(bodyParser.json())
 var UserTDT = require('../Models/UserModel')
 var Post = require('../Models/Post');
 var Comment = require('../Models/Comment');
+var Notification = require('../Models/nontification')
 const { start } = require('repl');
 const { Passport } = require('passport');
 
@@ -141,6 +142,10 @@ router.get('/', isLoggedIn, (req, res, next) => {
         console.log(error);
     });
 });
+
+
+
+
 router.post('/', isLoggedIn, (req, res, next) => {
     new Post({
         creator: userTDTU.authId,
@@ -158,6 +163,41 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 
 });
+
+// router.post('/nontification', (req, res)=>{
+//     console.log(req)
+//     new nontification({
+//         creator: userTDTU.authId,
+//         content: req.body.nontification,
+//         create_at: new Date(),
+//         update_at: new Date(),
+//     }).save(function (err, data) {
+//         if (err) return console.error(err);
+
+//         result = { post: data, user: userTDTU };
+//         res.send(result);
+// })
+// });
+// const io = require('socket.io')(8888)
+// io.on('connection', (socket) => {
+//     Msg.find().then(result => {
+//         socket.emit('output-messages', result)
+//     })
+//     console.log('a user connected');
+//     socket.emit('message', 'Hello world');
+//     socket.on('disconnect', () => {
+//         console.log('user disconnected');
+//     });
+//     socket.on('chatmessage', msg => {
+//         const message = new Msg({ msg });
+//         message.save().then(() => {
+//             io.emit('message', msg)
+//         })
+
+
+//     })
+// });
+
 router.get('/logout', function (req, res, next) {
     if (req.session) {
         // delete session object
@@ -369,7 +409,35 @@ router.post("/LoadMoreEvent", (req, res) => {
             }
         })
     }
+})
 
+router.get("/Notification", isLoggedIn, (req, res) => {
+    let page = req.query.Page ||1;
+
+    Notification.find({ }).sort({ _id: -1 },)
+    .skip((10*page)-10)
+    .limit(10)
+    .then((result) => {
+        Notification.countDocuments({}).then((count) => {   
+            res.render('./Pages/Newsofuser', { user: userTDTU, result: result, Pages:Math.ceil(count / 10), page: page });
+        })
+    })
+})
+
+router.get("/fakerdata", (req, res) => {
+    for (let i = 0; i < 10; i++) {
+        new Notification({
+            content:  "Day la notification " + i,
+            title : "Day la title " + i,
+            creator:    "TCNH",
+            create_at:  new Date(),
+            update_at:  new Date(),
+        }).save(function (err, data) {
+            if (err) return console.error(err);
+            result = { post: data };
+            console.log(JSON.stringify(result));
+        });
+    }
 })
 
 function isLoggedIn(req, res, next) {

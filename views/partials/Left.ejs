@@ -13,6 +13,11 @@
             View My Profile
         </a>
     </div>
+    <div class="text-center">
+        <a  href="/Notification?Page=1" class="font-weight-bold text-decoration-none text-center">
+            Xem Thông Báo
+        </a>
+    </div>
 
     <% if( user.role=="Admin" ) {%>
         <div class="text-center">
@@ -21,6 +26,21 @@
             </a>
         </div>
         <% }%>
+        <div class="text-center">
+            <a class="font-weight-bold text-decoration-none text-center">
+               Đăng thông báo
+            </a>
+        </div>
+
+   <!--
+        <form id="msgForm" action="">
+            <input type="text" name="msg">
+            <button>Send</button>
+        </form>
+        <div id="messages">
+    
+        </div>
+        -->
 </div>
 
 
