@@ -38,5 +38,10 @@ io.on('connection',client =>{
 
     client.on('disconnect', ()=> console.log(`${client.id} has left`))
     client.send('hello tui la dang hieu')
+
+    client.on('postnontification',  postnontificationfromsever =>{
+        console.log(postnontificationfromsever)
+        client.broadcast.emit('sendatatouser',postnontificationfromsever )
+    })
     
 })

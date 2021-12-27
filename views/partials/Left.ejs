@@ -21,21 +21,58 @@
             </a>
         </div>
         <% }%>
-        <div class="text-center">
-            <a href="/nontification" class="font-weight-bold text-decoration-none text-center">
-               Đăng thông báo
-            </a>
-        </div>
+            <div class="text-center">
+                <a href="/nontification" class="font-weight-bold text-decoration-none text-center">
+                    Đăng thông báo
+                </a>
+            </div>
 
-   
-        <form id="msgForm" action="">
-            <input type="text" name="msg">
-            <button>Send</button>
-        </form>
-        <div id="messages">
-    
-        </div>
+
+            <form id="msgForm" action="/nontification" method="POST">
+                <input id="msg" type="text" name="msg">
+                <button>Send</button>
+            </form>
+            <div id="messages">
+
+            </div>
 </div>
+<script>
 
+    console.log('Mở kết nối tới sever')
+    const socket = io('http://localhost:3000');
 
+    socket.on('connect', () => {
+        console.log('đã kết nối thành công')
+    })
+   // socket.on('disconnect', () => {
+        // console.log('đã kết nối thất bại')
+        // socket.on('message', m => { console.log(`đã nhận một tin nhắn:${m}`) })
 
+        // socket.on('sendatatouser', data => {
+        //     console.log(data)
+        // })
+    let formCreateNoti = document.getElementById('msgForm')
+    console.log(formCreateNoti)
+    formCreateNoti.onsubmit = (e) => {
+        e.preventDefault()
+        alert("run")
+        let msg = document.getElementById('msg').value
+        $.ajax({
+            url: "/nontification",
+            type: "POST",
+            data:{
+                msg: msg
+            },
+            success: function (response) {
+                socket.emit('postnontification', response.post)
+
+            }
+        })
+    }
+    let notiMain = document.getElementById('messages')
+    socket.on('sendatatouser', data =>{
+        notiMain.innerHTML = 
+        `CO thong bao moi : Content: ${data.content}`
+    })
+
+</script>

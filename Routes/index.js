@@ -172,20 +172,20 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 });
 
-// router.post('/nontification', (req, res)=>{
-//     console.log(req)
-//     new nontification({
-//         creator: userTDTU.authId,
-//         content: req.body.nontification,
-//         create_at: new Date(),
-//         update_at: new Date(),
-//     }).save(function (err, data) {
-//         if (err) return console.error(err);
+router.post('/nontification', (req, res)=>{
+    console.log(req.body)
+    new nontification({
+        creator: userTDTU.authId,
+        content: req.body.msg,
+        create_at: new Date(),
+        update_at: new Date(),
+    }).save(function (err, data) {
+        if (err) return console.error(err);
 
-//         result = { post: data, user: userTDTU };
-//         res.send(result);
-// })
-// });
+        result = { post: data, user: userTDTU };
+        res.send(result);
+})
+});
 // const io = require('socket.io')(8888)
 // io.on('connection', (socket) => {
 //     Msg.find().then(result => {
