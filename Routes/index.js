@@ -166,9 +166,10 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 router.post('/nontification', (req, res)=>{
     console.log(req.body)
-    new nontification({
-        creator: userTDTU.authId,
+    new Notification({
+        creator: req.body.Creator,
         content: req.body.msg,
+        title: req.body.title,
         create_at: new Date(),
         update_at: new Date(),
     }).save(function (err, data) {

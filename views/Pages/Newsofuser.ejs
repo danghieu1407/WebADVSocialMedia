@@ -1,3 +1,16 @@
+<h1>Thông báo gần đây</h1>
+<hr>
+<div class="NotificationItem">
+    <% for(let i =0; i < result.length; i++) { %>
+        <h5 class = "title text-danger text-uppercase"><%=result[i].title %></h5>
+        <h6 class = "Faculty">From:<%=result[i].creator %> </h6>
+        <a data-title="<%=result[i].title%>" data-content="<%=result[i].content %>" href="" class="OpenDetailNotification">
+            Xem chi tiết thông báo
+        </a>
+        <hr>
+    <%}%>
+</div>
+<hr>
 <div class="Pagination">
     <div class="row">
         <% if(Pages > 0) { %>
@@ -59,18 +72,6 @@
     </div>
 </div>
 <hr>
-<div class="NotificationItem">
-    <% for(let i =0; i < result.length; i++) { %>
-        <h5 class = "title text-danger text-uppercase"><%=result[i].title %></h5>
-        <h6 class = "Faculty">From:<%=result[i].creator %> </h6>
-        <a data-title="<%=result[i].title%>" data-content="<%=result[i].content %>" href="" class="OpenDetailNotification">
-            Xem chi tiết thông báo
-        </a>
-        <hr>
-    <%}%>
-</div>
-
-
 
 <div class="modal fade" id="DetailNotification">
     <div class="modal-dialog modal-dialog-scrollable">
@@ -84,6 +85,7 @@
             <!-- Modal body -->
             <div class="modal-body">
                 <h4 class="text-danger text-uppercase" id="TitleNotification"></h4>
+                <p id="FacultyNotification"  class=" text-uppercase"></p>
                <div class="ContentNotification"></div>
             </div>
 

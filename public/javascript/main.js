@@ -38,7 +38,7 @@ $(document).ready(function () {
 
 // socketio process
 // $(document).ready(function () {
- 
+
 // })
 
 // window.onload = ()=>{
@@ -60,22 +60,22 @@ $(document).ready(function () {
 //         e.preventDefault()
 //         alert("run")
 //     }
-    // $('#msgForm').on("submit", function (event) {
-    //     console.log('chaysocket')
-    //     event.preventDefault();
-    //     let msg = document.getElementById('msg').value
-    //     $.ajax({
-    //         url: "/nontification",
-    //         type: "POST",
-    //         data:{
-    //             msg: msg
-    //         },
-    //         success: function (response) {
-    //             socket.emit('postnontification', response.post)
+// $('#msgForm').on("submit", function (event) {
+//     console.log('chaysocket')
+//     event.preventDefault();
+//     let msg = document.getElementById('msg').value
+//     $.ajax({
+//         url: "/nontification",
+//         type: "POST",
+//         data:{
+//             msg: msg
+//         },
+//         success: function (response) {
+//             socket.emit('postnontification', response.post)
 
-    //         }
-    //     })
-    // })
+//         }
+//     })
+// })
 
 // })
 // }
@@ -249,12 +249,12 @@ $(document).ready(function () {
 
 /*Load Thêm Bài Viết */
 $(document).ready(function () {
-    
-    $(window).on("scroll", function() {
+
+    $(window).on("scroll", function () {
         if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
-    
+
             let code = $(".LoadMoreEvent").data('code');
-            if (code== 1) {
+            if (code == 1) {
                 let code = 1
                 $.ajax({
                     url: "/LoadMoreEvent",
@@ -273,18 +273,18 @@ $(document).ready(function () {
                             newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
                             list.appendChild(newDiv);
                         })
-    
+
                     }
                 })
             }
-            else if (code== 2) {
+            else if (code == 2) {
                 let code = 2
                 let id = $(".LoadMoreEvent").data('id')
                 $.ajax({
                     url: "/LoadMoreEvent",
                     method: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ code: code ,id:id}),
+                    data: JSON.stringify({ code: code, id: id }),
                     success: function (data) {
                         console.log(data)
                         let list = document.getElementById("CollectionDiv");
@@ -298,13 +298,13 @@ $(document).ready(function () {
                             newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
                             list.appendChild(newDiv);
                         })
-    
+
                     }
                 })
             }
-            
+
         }
-    }); 
+    });
 })
 
 $(document).ready(function () {
@@ -312,6 +312,7 @@ $(document).ready(function () {
         event.preventDefault();
         let content = $(event.target).data("content");
         let title = $(event.target).data("title");
+
         $("#TitleNotification").html(title);
         $(".ContentNotification").html(content);
         $("#DetailNotification").modal("show");
@@ -320,41 +321,88 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     function getNameFaculy(data) {
-        if(data=="BHLD")
-        {
+        if (data == "BHLD") {
             return "Bảo Hộ Lao Động";
         }
-        else if(data=="PCTHSSV")
-        {
+        else if (data == "PCTHSSV") {
             return "Phòng Công Tác Học Sinh Sinh Viên";
         }
-        else if(data=="PDH")
-        {
+        else if (data == "PDH") {
             return "Phòng Đại Học"
         }
-        else if(data=="PSDH")
-        {
+        else if (data == "PSDH") {
             return "Phòng Sau Đại Học"
         }
-        else if(data=="ĐTVMT")
-        {
+        else if (data == "ĐTVMT") {
             return "Phòng điện toán và máy tính"
         }
-        else if(data=="TDTUEnglish")
-        {
+        else if (data == "TDTUEnglish") {
             return "TDT Creative Language Center"
         }
-        else if(data=="TTTH")
-        {
+        else if (data == "TTTH") {
             return "Trung Tâm Tin Học"
         }
-        else if (data == "SDTC")
-        { 
+        else if (data == "SDTC") {
             return "Trung tâm đào tạo phát triển xã hội "
+        }
+        else if (data == "TCNH") {
+            return "Trung tâm đào tạo phát triển xã hội "
+        }
+        else {
+            return "Không xác định"
         }
     }
 })
 
+
+$(document).ready(function () {
+
+    $("#OpenModalPostNotification").on("click", (event) => {
+        event.preventDefault();
+        $("#PostNotification").modal("show");
+    })
+
+
+
+    console.log('Mở kết nối tới sever')
+    const socket = io('http://localhost:3000');
+
+    socket.on('connect', () => {
+        console.log('đã kết nối thành công')
+    })
+    let formCreateNoti = document.getElementById('msgForm')
+    $("#PostNotificationForm").on("submit", (event) => {
+        event.preventDefault()
+        let Creator = document.getElementById('Creator').value
+        let title = document.getElementById('title').value
+        let msg = document.getElementById('msg').value
+        $("#PostNotification").modal("hide");
+        $.ajax({
+            url: "/nontification",
+            type: "POST",
+            data: {
+                Creator: Creator,
+                title: title,
+                msg: msg
+            },
+            success: function (response) {
+
+                socket.emit('postnontification', response.post)
+                let notiMain = document.getElementById('messages')
+                socket.on('sendatatouser', data => {
+                    notiMain.innerHTML = `Có thông báo mới : 
+                    Từ: ${data.Creator}
+                    Tiêu Đề: ${data.title}
+                    `
+                })
+                $('#PostNotificationForm')[0].reset();
+            }
+        })
+    })
+
+
+
+})
 
 
 
