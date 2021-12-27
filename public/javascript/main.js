@@ -386,16 +386,16 @@ $(document).ready(function () {
                 msg: msg
             },
             success: function (response) {
-
                 socket.emit('postnontification', response.post)
                 let notiMain = document.getElementById('messages')
                 socket.on('sendatatouser', data => {
                     notiMain.innerHTML = `Có thông báo mới : 
-                    Từ: ${data.Creator}
+                    Từ: ${data.creator}
                     Tiêu Đề: ${data.title}
                     `
+                    $('#PostNotificationForm')[0].reset();
                 })
-                $('#PostNotificationForm')[0].reset();
+                
             }
         })
     })

@@ -164,7 +164,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 });
 
-router.post('/nontification', (req, res)=>{
+router.post('/nontification', (req, res) => {
     console.log(req.body)
     new Notification({
         creator: req.body.Creator,
@@ -177,28 +177,8 @@ router.post('/nontification', (req, res)=>{
 
         result = { post: data, user: userTDTU };
         res.send(result);
-})
+    })
 });
-// const io = require('socket.io')(8888)
-// io.on('connection', (socket) => {
-//     Msg.find().then(result => {
-//         socket.emit('output-messages', result)
-//     })
-//     console.log('a user connected');
-//     socket.emit('message', 'Hello world');
-//     socket.on('disconnect', () => {
-//         console.log('user disconnected');
-//     });
-//     socket.on('chatmessage', msg => {
-//         const message = new Msg({ msg });
-//         message.save().then(() => {
-//             io.emit('message', msg)
-//         })
-
-
-//     })
-// });
-
 router.get('/logout', function (req, res, next) {
     if (req.session) {
         // delete session object
@@ -373,7 +353,7 @@ router.get("/PageOfUser", isLoggedIn, (req, res, next) => {
 
 })
 
-router.post("/LoadMoreEvent", (req, res) => {   
+router.post("/LoadMoreEvent", (req, res) => {
     let code = req.body.code
     if (code == 1) {
         Post.aggregate([{
@@ -389,50 +369,62 @@ router.post("/LoadMoreEvent", (req, res) => {
         { $limit: 10 },
         ]).then((result) => {
             skip = skip + 10;
-            res.send({result: result,code:1});
+            res.send({ result: result, code: 1 });
         }).catch((error) => {
             console.log(error);
         });
-    }else if(code==2)
-    {
+    } else if (code == 2) {
         let userotherIdforLoadmore = req.body.id
         UserTDT.findOne({ authId: userotherIdforLoadmore }, (err, userother) => {
             if (err) console.log(err);
             else {
                 Post.find({ creator: userotherIdforLoadmore })
-                .sort({ _id: -1 })
-                .skip(skip)
-                .limit(10)
-                .then((post) => {
-                    skip = skip + 10;
-                    res.send({ userother: userother, post: post,});
-                })
+                    .sort({ _id: -1 })
+                    .skip(skip)
+                    .limit(10)
+                    .then((post) => {
+                        skip = skip + 10;
+                        res.send({ userother: userother, post: post, });
+                    })
             }
         })
     }
 })
 
 router.get("/Notification", isLoggedIn, (req, res) => {
-    let page = req.query.Page ||1;
+    let page = req.query.Page || 1;
+    let Type = req.query.Type || null;
+    if (Type === null) {
+        Notification.find({}).sort({ _id: -1 },)
+            .skip((10 * page) - 10)
+            .limit(10)
+            .then((result) => {
+                Notification.countDocuments({}).then((count) => {
+                    res.render('./Pages/Newsofuser', { user: userTDTU, result: result, Pages: Math.ceil(count / 10), page: page,Type:null });
+                })
+            })
+    }else
+    { 
+        Notification.find({creator:Type}).sort({ _id: -1 },)
+            .skip((10 * page) - 10)
+            .limit(10)
+            .then((result) => {
+                Notification.countDocuments({creator:Type}).then((count) => {
+                    res.render('./Pages/Newsofuser', { user: userTDTU, result: result, Pages: Math.ceil(count / 10), page: page ,Type:Type});
+                })
+            })
+    }
 
-    Notification.find({ }).sort({ _id: -1 },)
-    .skip((10*page)-10)
-    .limit(10)
-    .then((result) => {
-        Notification.countDocuments({}).then((count) => {   
-            res.render('./Pages/Newsofuser', { user: userTDTU, result: result, Pages:Math.ceil(count / 10), page: page });
-        })
-    })
 })
 
 router.get("/fakerdata", (req, res) => {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 11; i <= 20; i++) {
         new Notification({
-            content:  "Day la notification " + i,
-            title : "Day la title " + i,
-            creator:    "TCNH",
-            create_at:  new Date(),
-            update_at:  new Date(),
+            content: "Day la notification " + i,
+            title: "Day la title " + i,
+            creator: "Law",
+            create_at: new Date(),
+            update_at: new Date(),
         }).save(function (err, data) {
             if (err) return console.error(err);
             result = { post: data };
@@ -440,6 +432,11 @@ router.get("/fakerdata", (req, res) => {
         });
     }
 })
+
+router.get('/DELETEALL', function (req, res) {
+    Notification.deleteMany({}, function (err, result) {
+    });
+});
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated() || temp === true)
