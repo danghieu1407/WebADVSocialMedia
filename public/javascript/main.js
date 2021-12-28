@@ -370,7 +370,8 @@ $(document).ready(function () {
     socket.on('connect', () => {
         console.log('đã kết nối thành công')
     })
-    let formCreateNoti = document.getElementById('msgForm')
+    let formCreateNoti = document.getElementById('PostNotificationForm')
+    console.log(formCreateNoti)
     $("#PostNotificationForm").on("submit", (event) => {
         event.preventDefault()
         let Creator = document.getElementById('Creator').value
@@ -388,20 +389,25 @@ $(document).ready(function () {
             success: function (response) {
 
                 socket.emit('postnontification', response.post)
-                let notiMain = document.getElementById('messages')
-                socket.on('sendatatouser', data => {
-                    notiMain.innerHTML = `Có thông báo mới : 
-                    Từ: ${data.Creator}
-                    Tiêu Đề: ${data.title}
-                    `
-                })
-                $('#PostNotificationForm')[0].reset();
+                console.log(response)
+               
+                // console.log(notiMain)
+              
+                // $('#PostNotificationForm')[0].reset();
+            
             }
         })
+       
     })
-
-
-
+    let notiMain = document.getElementById('messages')
+    socket.on('sendatatouser', data => {
+        console.log(data)
+        notiMain.innerHTML = `Có thông báo mới : 
+        Từ: ${data.content}
+        Tiêu Đề: ${data.title}
+        `
+        
+    })
 })
 
 

@@ -167,7 +167,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
 router.post('/nontification', (req, res)=>{
     console.log(req.body)
     new Notification({
-        creator: req.body.Creator,
+        creator: userTDTU.role,
         content: req.body.msg,
         title: req.body.title,
         create_at: new Date(),
@@ -179,25 +179,6 @@ router.post('/nontification', (req, res)=>{
         res.send(result);
 })
 });
-// const io = require('socket.io')(8888)
-// io.on('connection', (socket) => {
-//     Msg.find().then(result => {
-//         socket.emit('output-messages', result)
-//     })
-//     console.log('a user connected');
-//     socket.emit('message', 'Hello world');
-//     socket.on('disconnect', () => {
-//         console.log('user disconnected');
-//     });
-//     socket.on('chatmessage', msg => {
-//         const message = new Msg({ msg });
-//         message.save().then(() => {
-//             io.emit('message', msg)
-//         })
-
-
-//     })
-// });
 
 router.get('/logout', function (req, res, next) {
     if (req.session) {
