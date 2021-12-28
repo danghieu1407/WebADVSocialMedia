@@ -387,7 +387,6 @@ $(document).ready(function () {
                 msg: msg
             },
             success: function (response) {
-
                 socket.emit('postnontification', response.post)
                 console.log(response)
                
