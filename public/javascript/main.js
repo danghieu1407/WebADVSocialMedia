@@ -401,10 +401,9 @@ $(document).ready(function () {
     let notiMain = document.getElementById('messages')
     socket.on('sendatatouser', data => {
         console.log(data)
-        notiMain.innerHTML = `Có thông báo mới : 
-        Từ: ${data.content}
-        Tiêu Đề: ${data.title}
+        notiMain.innerHTML = `<div id="snackbar">${data.creator}: ${data.title}</div>
         `
+
         
     })
 })
