@@ -1,5 +1,5 @@
-<div class=" sjfsj">
-    <span class="text-center pt-3 dfkj"><img src=" <%= user.avatar%>" alt=""></span>
+<div class=" sjfsj" id="centerleft">
+    <span class=""><img class="img-fluid" src=" <%= user.avatar%>" alt=""></span>
     <h5 class="text-center pt-3">
         <%= user.name%>
     </h5>
@@ -9,28 +9,29 @@
     <hr>
 
     <div class="text-center">
-        <a href="/UserProfile" class="font-weight-bold text-decoration-none text-center btn btn-primary">
+        <a href="/UserProfile" class="snip1582">
             Trang cá nhân
         </a>
     </div>
-    <hr>
+ 
     <% if( user.role!="Student" ) {%>
         <div class="text-center">
-            <a href="/adminmanager" class="font-weight-bold text-decoration-none text-center btn btn-primary">
+            <a href="/adminmanager" class="snip1582">
                 Manager Faculty
             </a>
         </div>
         
-    <hr>
+  
         <div class="text-center">
-            <a id="OpenModalPostNotification" class="font-weight-bold text-decoration-none text-center btn btn-primary" >
+            <a id="OpenModalPostNotification" class="snip1582" >
                 Đăng thông báo
             </a>
         </div>
+    
+
     <% }%>
-    <hr>
     <div class="dropdown">
-        <button class="dropbtn btn btn-primary">Xem Thông Báo</button>
+        <button class="dropbtn snip1582">Xem Thông Báo</button>
         <div class="dropdown-content">
           <a class="dropdown-item" href="/Notification">Tất cả thông báo</a>
           <h6>Phòng Ban</h6>
