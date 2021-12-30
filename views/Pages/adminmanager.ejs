@@ -1,77 +1,145 @@
-<div class="col-md-6" id="createaccount">
-    <div class="box1">
-        <h1 class="text-center">Tạo tài khoản </h1>
-        <form action="/adminmanager" method="POST">
-            <div class="form-group">
-                <label for="user">Name</label>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-
-                    </div>
-                    <input name="name" id="name" type="text" class="form-control" placeholder="Enter a name">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="user">Email</label>
-                <div class="input-group mb-3">
-                    <input name="email" id="email" type="text" class="form-control" placeholder="Enter a email">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="user">Password</label>
-                <div class="input-group mb-3">
-                    <input name="password" id="password" type="password" class="form-control" placeholder="Enter a password">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="user">Choose a Faculty</label>
-                <div class="input-group mb-3">
-                    <select name="faculty" class="select1">
-                        <option name="CNTT" value="cntt">Công nghệ thông tin</option>
-                        <option name="TCNH" value="tcnh">Tài chính ngân hàng</option>
-                        <option name="Law" value="l">Luật</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="user">Choose a Role</label>
-                <div class="input-group mb-3">
-                    <select name="role" class="select1">
-                        <option name="khoa" value="faculty">Khoa</option>
-                        <option name="student" value="student">Student</option> 
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="user">Choose a Avatar</label>
-                <div class="input-group mb-3">
-                    <select name="avatar" class="select1">
-                        <option name="cntt" value="https://fita.vnua.edu.vn/wp-content/uploads/2021/01/cong-nghe-thong-tin-la-gi.jpg" >Công nghệ thông tin</option>
-                        <option name="tcnh" value="https://file.vnua.edu.vn/data/0/images/2020/06/01/tiengviet/2020-1-6-tcnh001.jpg?w=680" >Tài chính ngân hàng</option>
-                        <option name="Law" value="http://luatsutrankhacthanh.com/wp-content/uploads/2015/08/tu-van-luat7.jpg" >Luật</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <% if (locals.errorMessage) { %>
-                    <div class="alert alert-danger">
-                        <%= errorMessage %>
-                    </div>
-                    <% } %>
-
-                        <% if (locals.successMessage) { %>
-                            <div class="alert alert-success">
-                                <%= successMessage %>
-                            </div>
-                            <% } %>
-            </div>
-            <br>
-            <button type="submit" class="btn btn-success" id="btn-create">Tạo</button>
+<div class="" id="createaccount">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>ID</th>
+                <th>Họ tên đơn vị</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Phòng/Khoa</th>
+                <th>Vai trò</th>
+                <th>Thao tác</th>
 
 
-        </form>
+            </tr>
+        </thead>
+        <tbody>
+            <%  userList.forEach(function(doc,index){ %>
+                <tr id="<%= doc.authId %>">
+                    <td>
+                        <%= index+1%>
+                    </td>
+                    <td>
+                        <%= doc.authId %>
+                    </td>
+                    <td>
+                        <%= doc.name %>
+                    </td>
+                    <td>
+                        <%= doc.email %>
+                    </td>
+                    <td>
+                        <%= doc.password %>
+                    </td>
+                    <td>
+                        <%= doc.Faculty %>
+                    </td>
+                    <td>
+                        <%= doc.role %>
+                    </td>
+
+                    <% if(doc.role!="Student"){ %>
+                        <td>
+                            <a data-id="<%= doc.authId %>" data-name="<%= doc.success %>" class="edit-btn" id="edit-btn" href="/editaccountByAdmin">Chỉnh sửa</a>
+                            <!-- <a data-id="<%= doc.authId %>" data-name="<%= doc.name %>" class="edit-btn" id="edit-btn" href="/editaccount" hidden>Chỉnh sửa</a> -->
+
+                            <% if( doc.role!="Admin" ) {%>
+                                <a data-id="<%= doc.authId %>" data-name="<%= doc.name %>" class="delete-btn" id="delete-btn" href="/deleteaccount">Xóa</a>
+                                <% } %>
+                        </td>
+                </tr>
+                <% } %>
+
+                    <%  }) %>
+        </tbody>
+    </table>
+    <div>
+        <a href="/createaccount" class="btn btn-succes" id="btn-create" style="background-color: green;color: white;">
+                Tạo tài khoản
+            </a>
     </div>
 
+</div>
+
+
+<!--Modal xóa user-->
+<div class="modal fade" id="confirmDelete">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Tiêu đề -->
+            <div class="modal-header">
+                <h4 class="modal-title">Xóa sản phẩm</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Nội dung -->
+            <div class="modal-body">
+                Chắc chắn xóa tài khoản <strong id="product-name">ABC</strong> ?
+            </div>
+
+            <!-- 2 nút -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-confirm-delete">Xóa</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editModal">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Tiêu đề -->
+            <div class="modal-header">
+                <h4 class="modal-title">Đổi mật khẩu cho tài khoản <strong id="user-name">ABC</strong></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Nội dung -->
+            <div class="modal-body" id="modalresetbody">
+                <form action="/editaccountByAdmin" method="POST">
+                    <div class="form-group">
+                        <label for="user">Nhập mật khẩu cũ</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+
+                            </div>
+                            <input name="password" id="password" type="password" class="form-control" value="" placeholder="Enter old password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="user">Nhập mật khẩu mới</label>
+                        <div class="input-group mb-3">
+                            <input name="newPassword" id="newPassword" type="password" class="form-control" value="" placeholder="Enter new password">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user">Xác nhận mật khẩu mới</label>
+                        <div class="input-group mb-3">
+                            <input name="confirmPassword" id="confirmPassword" type="password" class="form-control" value="" placeholder="Confirm new password">
+                        </div>
+                    </div>
+                    <input type="text" id="edituser" value="" hidden>
+
+
+                </form>
+            </div>
+
+            <!-- 2 nút -->
+            <div class="modal-footer">
+                <button type="button" class=" btn btn-success btn-confirm-edit " id="btn-edit">Đổi mật khẩu</button>
+            </div>
+
+        </div>
+    </div>
 </div>

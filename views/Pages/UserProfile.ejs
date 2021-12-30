@@ -1,37 +1,35 @@
 <!-- <div class="jfheuf"> -->
 
 
-    <table class="table table-dark">
-        <h1 class="text-center">Thông tin cá nhân</h1>
-        <form method="post" id="FormUserProfile">
-            <thead>
-                <tr>
-                    <td>Ảnh Đại Diện</td>
-                    <td>
-                        <div class="sjfsj">
-                            <img src="<%= user.avatar%>" alt="">
-                        </div>
-                    </td>
+<table class="table table-dark">
+    <h1 class="text-center">Thông tin cá nhân</h1>
+    <form method="post" id="FormUserProfile">
+        <thead>
+            <tr>
+                <td>Ảnh Đại Diện</td>
+                <td>
+                    <div class="sjfsj">
+                        <img src="<%= user.avatar%>" alt="">
+                    </div>
+                </td>
 
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        Tên
-                        <input value="<%= user.name%>" name="name" type="text" class="form-control" id="Name"
-                            placeholder="Nhập Tên">
-                    </td>
-                    <td>
-                        Lớp
-                        <input value="<%= user.Class%>" name="Class" type="text" class="form-control" id="Class"
-                            placeholder="Nhập Lớp">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Khoa
-                        <select name="Faculty" id="Class" class="form-control">
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    Tên
+                    <input value="<%= user.name%>" name="name" type="text" class="form-control" id="Name" placeholder="Nhập Tên">
+                </td>
+                <td>
+                    Lớp
+                    <input value="<%= user.Class%>" name="Class" type="text" class="form-control" id="Class" placeholder="Nhập Lớp">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Khoa
+                    <select name="Faculty" id="Class" class="form-control">
                             <%if( user.Faculty=="Law" ){%>
                                 <option value="Law" selected>Luật</option>
                                 <%}else if( user.Faculty=="MTCN" ){%>
@@ -69,70 +67,68 @@
                                                                         </option>
                                                                         <option value="GDQT">Giáo dục quốc tế</option>
                         </select>
-                    </td>
-                    <td>
-                        Gmail
-                        <input value="<%= user.email%>" type="text" class="form-control" id="gmail" readonly>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="submit" class="form-control" value="Lưu Thông Tin">
-                    </td>
-                </tr>
-            </tbody>
-        </form>
-    </table>
+                </td>
+                <td>
+                    Gmail
+                    <input value="<%= user.email%>" type="text" class="form-control" id="gmail" readonly>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" class="form-control" value="Lưu Thông Tin">
+                </td>
+            </tr>
+        </tbody>
+    </form>
+</table>
 
-    <div id="CollectionDiv">
-        <h3 class="text-center">Bài Đăng</h3>
-        <% for (var i=0; i <post.length; i++) { %>
-            <div class="box1" id="<%= post[i]._id%>">
-                <div class="d-flex skfjkk">
-                    <div class="lkt40 ">
-                        <img class="avt" src="<%=user.avatar%>" alt="">
-                    </div>
-                    <div class="pl-2 pt-1 ">
-                        <h6 class="name">
-                            <%=user.name%>
-                        </h6>
-                        <a data-id="<%= post[i]._id%>" href="/DeletePost" id="btn-delete">Delete</a>
-                        <a data-content="<%= post[i].content%>" data-id="<%= post[i]._id%>" href="/Edit"
-                            class="btn-edit">Edit</a>
-                    </div>
+<div id="CollectionDiv" data-code="2" data-id="<%=user.authId%>" class="LoadMoreEvent">
+
+    <h3 class="text-center">Bài Đăng</h3>
+    <% for (var i=0; i <post.length; i++) { %>
+        <div class="box1" id="<%= post[i]._id%>">
+            <div class="d-flex skfjkk">
+                <div class="lkt40 ">
+                    <img class="avt" src="<%=user.avatar%>" alt="">
                 </div>
-                <hr>
-                <p id="content" class="text-muted " name="content">
+                <div class="pl-2 pt-1 ">
+                    <h6 class="namePage">
+                        <%=user.name%>
+                    </h6>
+
+                    <a data-id="<%= post[i]._id%>" href="/DeletePost" id="btn-delete">Delete</a>
+                    <a data-content="<%= post[i].content%>" data-id="<%= post[i]._id%>" href="/Edit" class="btn-edit">Edit</a>
+                </div>
+            </div>
+            <hr>
+            <p id="content" class="text-muted " name="content">
                 <h6 class="content">
                     <%= post[i].content %>
                 </h6>
-                </p>
-                <hr>
-                <div class="d-flex justify-content-around">
-                    <div>
-                        <i class="fa fa-heart"></i>
-                        Like
-                    </div>
-                    <div class="OpenCommentModal">
-                        <i class="fa fa-comment"></i>
-                        Comments
-                    </div>
-
+            </p>
+            <hr>
+            <div class="d-flex justify-content-around">
+                <div>
+                    <i class="fa fa-heart"></i> Like
+                </div>
+                <div data-id="<%= post[i]._id%>" class="OpenCommentModal">
+                    <i class="fa fa-comment"></i> Comments
                 </div>
 
             </div>
-            <br>
 
-            <%}%>
-    </div>
+        </div>
+        <br>
+
+        <%}%>
+</div>
 
 
 
 <div class="modal fade" id="editPost">
     <div class="modal-dialog">
         <div class="modal-content">
-
             <!-- Modal Header -->
             <div class="modal-header">
                 <h4 class="modal-title">Chỉnh Sửa Bài Viêt</h4>
@@ -159,8 +155,7 @@
                     </div>
 
                     <input type="text" id="IDForEditContent" value="" hidden>
-                    <textarea name="content" id="contentedit" cols="3" rows="3" class="form-control"
-                        placeholder="Write Something...." value=""></textarea>
+                    <textarea name="content" id="contentedit" cols="3" rows="3" class="form-control" placeholder="Write Something...." value=""></textarea>
                     <hr>
                     <input type="submit" value="Sửa bài viết" class="btn btn-info pull-right">
                 </form>

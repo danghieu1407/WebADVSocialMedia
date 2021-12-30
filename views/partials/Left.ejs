@@ -21,5 +21,12 @@
             </a>
         </div>
         <% }%>
-</div>
 
+            <% if( user.role=="Law" || user.role=="CNTT" || user.role=="TCNH" || user.role=="Admin") {%>
+                <div class="text-center">
+                    <a href="/editaccount" class="font-weight-bold text-decoration-none text-center">
+                    Change Password
+                </a>
+                </div>
+                <% }%>
+</div>

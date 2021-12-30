@@ -129,7 +129,7 @@ $(document).ready(function() {
 let IDPost;
 /*Comment Bài Viết */
 $(document).ready(function() {
-    $(document).on("click",".OpenCommentModal", (event) => {
+    $(document).on("click", ".OpenCommentModal", (event) => {
         event.preventDefault();
         IDPost = $(event.target).data('id');
         $("#CommentModal").modal("show");
@@ -200,6 +200,7 @@ $(document).ready(function() {
     })
 
     $('#CommentModal').on('hidden.bs.modal', function() {
+        console.log("CloseModal")
         let list = document.getElementById('CommentList');
         let Div = document.querySelector(".ElementComment");
         let newDiv = Div.cloneNode(true);
@@ -227,35 +228,125 @@ $(document).ready(function() {
 
 
 /*Load Thêm Bài Viết */
-$(document).ready(function () {
-    $("body").on('click', '#LoadMoreEvent', function (event) {
-        event.preventDefault();
-        var limit = 10;
-        $.ajax({
-            url: "/LoadMoreEvent",
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ limit: limit }),
-            success: function (data) {
-                let list  = document.getElementById("CollectionDiv");
-                data.forEach(data_element=>{
-                    let OldDiv = document.querySelector('.box1');
-                    let newDiv = OldDiv.cloneNode(true);
-                    newDiv.querySelector('.namePage').innerHTML = data_element.user.name;;
-                    newDiv.querySelector('.namePage').setAttribute('href', `/PageOfUser?authId=${data_element.user.authId}`);
-                    newDiv.querySelector('.content').innerHTML = data_element.content;
-                    newDiv.querySelector('.avt').src = data_element.user.avatar;
-                    newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
-                    list.appendChild(newDiv);
+$(document).ready(function() {
+
+    $(window).on("scroll", function() {
+        if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+
+            let code = $(".LoadMoreEvent").data('code');
+            if (code == 1) {
+                let code = 1
+                $.ajax({
+                    url: "/LoadMoreEvent",
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ code: code }),
+                    success: function(data) {
+                        let list = document.getElementById("CollectionDiv");
+                        data.result.forEach(data_element => {
+                            let OldDiv = document.querySelector('.box1');
+                            let newDiv = OldDiv.cloneNode(true);
+                            newDiv.querySelector('.namePage').innerHTML = data_element.user.name;
+                            newDiv.querySelector('.namePage').setAttribute('href', `/PageOfUser?authId=${data_element.user.authId}`);
+                            newDiv.querySelector('.content').innerHTML = data_element.content;
+                            newDiv.querySelector('.avt').src = data_element.user.avatar;
+                            newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
+                            list.appendChild(newDiv);
+                        })
+
+                    }
+                })
+            } else if (code == 2) {
+                let code = 2
+                let id = $(".LoadMoreEvent").data('id')
+                $.ajax({
+                    url: "/LoadMoreEvent",
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ code: code, id: id }),
+                    success: function(data) {
+                        console.log(data)
+                        let list = document.getElementById("CollectionDiv");
+                        data.post.forEach(data_element => {
+                            let OldDiv = document.querySelector('.box1');
+                            let newDiv = OldDiv.cloneNode(true);
+                            newDiv.querySelector('.namePage').innerHTML = data.userother.name;
+                            newDiv.querySelector('.namePage').setAttribute('href', `/PageOfUser?authId=${data.userother.authId}`);
+                            newDiv.querySelector('.content').innerHTML = data_element.content;
+                            newDiv.querySelector('.avt').src = data.userother.avatar;
+                            newDiv.querySelector('.OpenCommentModal').setAttribute('data-id', data_element._id);
+                            list.appendChild(newDiv);
+                        })
+
+                    }
                 })
             }
 
+        }
+    });
+
+})
+
+/*Xóa tài khoản*/
+$(document).ready(function() {
+    $(document).on("click", "#delete-btn", (e) => {
+        e.preventDefault()
+
+        let id = $(e.target).data('id');
+        let name = $(e.target).data('name');
+
+        $('#confirmDelete #product-name').html(name)
+        $('#confirmDelete .btn-confirm-delete').attr('data-id', id)
+
+        $('#confirmDelete').modal('show')
+    })
+    $(document).on("click", '#confirmDelete .btn-confirm-delete', (e) => {
+        const id = $(e.target).data('id');
+        $.ajax({
+            url: "/deleteaccount",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ authId: id }),
+            success: function(data) {
+                let id = data.authId;
+                let Div = document.getElementById(id);
+                Div.remove();
+            }
+        })
+        $('#confirmDelete').modal('hide')
+    })
+
+})
+$(document).ready(function() {
+    $(document).on("click", "#edit-btn", (e) => {
+        e.preventDefault();
+        let id = $(e.target).data('id');
+        let name = $(e.target).data('name');
+
+
+        $("#edituser").attr("value", id);
+        $('#editModal #user-name').html(name)
+        $('#editModal').modal('show')
+    })
+    $(document).on("click", '#editModal .btn-confirm-edit', (e) => {
+
+        let psw = document.getElementById('password').value
+        let npsw = document.getElementById('newPassword').value
+        let cfpsw = document.getElementById('confirmPassword').value
+        let id = $('#edituser').val()
+
+
+        $('#editModal').modal('hide')
+
+        $.ajax({
+            url: "/editaccountByAdmin",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ authId: id, password: psw, newPassword: npsw, confirmPassword: cfpsw }),
+            success: function(data) {
+                $('#modalresetbody')[0].reset();
+
+            }
         })
     })
 })
-
-
-
-
-
-

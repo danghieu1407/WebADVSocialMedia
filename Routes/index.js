@@ -8,9 +8,10 @@ var ObjectId = require('mongodb').ObjectID;
 const http = require('http');
 const socketio = require('socket.io');
 const db = require('../db')
-var formidable = require('formidable')
 var Error = require('../Models/Error')
 var multer = require('multer')
+const uuid = require('short-uuid')
+var alert = require('alert')
 
 const emailValidator = require('email-validator')
 router.use(session({
@@ -40,6 +41,7 @@ var Post = require('../Models/Post');
 var Comment = require('../Models/Comment');
 const { start } = require('repl');
 const { Passport } = require('passport');
+const e = require('express');
 
 let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
 let post; /*Lấy tất cả bài post trong moongose */
@@ -68,8 +70,6 @@ router.get('/login', (req, res, next) => {
                 res.render('Layout/login', { layout: `./Layout/login` })
             }
         })
-
-
 })
 temp = false
 let tempcc;
@@ -215,7 +215,7 @@ router.post("/EditPost", function(req, res) {
 
 
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
-
+    skip = 10
     Post.find({ creator: userTDTU.authId }).sort({ _id: -1 }).limit(10).then((result) => {
         res.render('./Pages/UserProfile', { user: userTDTU, post: result });
     })
@@ -241,7 +241,7 @@ router.post("/UserProfile", isLoggedIn, (req, res, next) => {
     })
 
 });
-router.get('/adminmanager', isLoggedIn, (req, res) => {
+router.get('/createaccount', isLoggedIn, (req, res) => {
     if (!req.user) {
         userTDTU = tempcc
 
@@ -249,10 +249,10 @@ router.get('/adminmanager', isLoggedIn, (req, res) => {
         userTDTU = req.user;
     }
 
-    res.render('./Pages/adminmanager', { user: userTDTU });
+    res.render('./Pages/createaccount', { user: userTDTU });
 })
 
-router.post('/adminmanager', isLoggedIn, (req, res) => {
+router.post('/createaccount', isLoggedIn, (req, res) => {
     if (!req.user) {
         userTDTU = tempcc
 
@@ -267,24 +267,25 @@ router.post('/adminmanager', isLoggedIn, (req, res) => {
         .then(user => {
             if (user) {
                 error = 'Tài khoản đã tồn tại'
-                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+                res.render('./Pages/createaccount', { user: userTDTU, errorMessage: error })
             } else if (!name) {
                 error = 'Nhập tên người dùng'
-                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+                res.render('./Pages/createaccount', { user: userTDTU, errorMessage: error })
             } else if (email === '') {
                 error = 'Nhập email'
-                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
-            } else if (!email.includes('@tdtu.edu.vn') && !email.includes('@student.tdtu.edu.vn')) {
+                res.render('./Pages/createaccount', { user: userTDTU, errorMessage: error })
+            } else if (!email.includes('@tdtu.edu.vn')) {
                 error = 'Email không hợp lệ'
-                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+                res.render('./Pages/createaccount', { user: userTDTU, errorMessage: error })
             } else if (!password) {
                 error = 'Nhập mật khẩu'
-                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+                res.render('./Pages/createaccount', { user: userTDTU, errorMessage: error })
             } else if (password.length < 6) {
                 error = 'Mật khẩu phải nhiều hơn 6 kí tự'
-                res.render('./Pages/adminmanager', { user: userTDTU, errorMessage: error })
+                res.render('./Pages/createaccount', { user: userTDTU, errorMessage: error })
             } else {
                 new UserTDT({
+                    authId: req.body.email + 'authidne',
                     name: req.body.name,
                     email: req.body.email,
                     password: req.body.password,
@@ -294,7 +295,7 @@ router.post('/adminmanager', isLoggedIn, (req, res) => {
                     avatar: req.body.avatar
                 }).save()
                 success = 'Tạo tài khoản thành công'
-                res.render('./Pages/adminmanager', { user: userTDTU, successMessage: success })
+                res.render('./Pages/createaccount', { user: userTDTU, successMessage: success })
             }
         })
 
@@ -365,27 +366,185 @@ router.get("/PageOfUser", isLoggedIn, (req, res, next) => {
 })
 
 router.post("/LoadMoreEvent", (req, res) => {
-
-    Post.aggregate([{
-            $lookup: {
-                from: "usertdtus",
-                localField: "creator",
-                foreignField: "authId",
-                as: "user"
+    let code = req.body.code
+    if (code == 1) {
+        Post.aggregate([{
+                $lookup: {
+                    from: "usertdtus",
+                    localField: "creator",
+                    foreignField: "authId",
+                    as: "user"
+                }
+            }, { "$unwind": "$user" },
+            { $sort: { _id: -1 } },
+            { $skip: skip },
+            { $limit: 10 },
+        ]).then((result) => {
+            skip = skip + 10;
+            res.send({ result: result, code: 1 });
+        }).catch((error) => {
+            console.log(error);
+        });
+    } else if (code == 2) {
+        let userotherIdforLoadmore = req.body.id
+        UserTDT.findOne({ authId: userotherIdforLoadmore }, (err, userother) => {
+            if (err) console.log(err);
+            else {
+                Post.find({ creator: userotherIdforLoadmore })
+                    .sort({ _id: -1 })
+                    .skip(skip)
+                    .limit(10)
+                    .then((post) => {
+                        skip = skip + 10;
+                        res.send({ userother: userother, post: post, });
+                    })
             }
-        }, { "$unwind": "$user" },
-        { $sort: { _id: -1 } },
-        { $skip: skip },
-        { $limit: 10 },
-    ]).then((result) => {
-        skip = skip + 10;
-        res.send(result);
-    }).catch((error) => {
-        console.log(error);
-    });
+        })
+    }
+
 })
+router.get('/adminmanager', isLoggedIn, (req, res) => {
+        if (!req.user) {
+            userTDTU = tempcc
 
+        } else {
+            userTDTU = req.user;
+        }
+        if (userTDTU.role !== "Admin") {
+            return res.redirect('/')
+        }
 
+        UserTDT.find({}, (err, doc) => {
+            if (err) {
+                console.log(err);
+            } else {
+
+                res.render('./Pages/adminmanager', { user: userTDTU, userList: doc });
+            }
+        })
+
+    })
+    // router.post('/DeletePost', function(req, res) {
+
+//     query = { _id: ObjectId((req.body.IDPost)) }
+//     Post.deleteOne(query, function(err, result) {
+//         if (err) console.log(err);
+//         else {
+//             Comment.deleteMany({ IdOfPost: ObjectId((req.body.IDPost)) }, function(err, result) {
+//                 if (err) console.log(err);
+//                 res.send(req.body);
+//             });
+//         }
+//     })
+// });
+router.post('/deleteaccount', isLoggedIn, function(req, res) {
+    if (!req.user) {
+        userTDTU = tempcc
+
+    } else {
+        userTDTU = req.user;
+    }
+    query = { authId: req.body.authId }
+
+    UserTDT.deleteOne(query, function(err, result) {
+        if (err) console.log(err);
+        else {
+            res.send(req.body)
+        }
+    })
+
+});
+router.get('/editaccount', isLoggedIn, (req, res) => {
+    if (!req.user) {
+        userTDTU = tempcc
+
+    } else {
+        userTDTU = req.user;
+    }
+
+    if (userTDTU.role !== "Admin" && userTDTU.role !== "Law" && userTDTU.role !== "CNTT" && userTDTU.role !== "TCNH") {
+        return res.redirect('/')
+    }
+    res.render('./Pages/editaccount', { user: userTDTU });
+})
+let tempccc;
+router.post('/editaccount', isLoggedIn, (req, res) => {
+    if (!req.user) {
+        userTDTU = tempcc
+
+    } else {
+        userTDTU = req.user;
+    }
+    const body = req.body
+    UserTDT.findOne({ authId: userTDTU.authId })
+        .then(user => {
+            let error = '';
+            if (body.password != user.password) {
+                error = 'Mật khẩu cũ không chính xác'
+            } else if (!body.newPassword) {
+                error = 'Mật khẩu mới không được bỏ trống'
+            } else if (body.newPassword === body.password) {
+                error = 'Mật khẩu mới không được trùng'
+            } else if (body.newPassword.length < 6) {
+                error = 'Mật khẩu mới phải dài hơn 6 kí tự'
+            } else if (!body.confirmPassword) {
+                error = 'Nhập xác nhận mật khẩu'
+            } else if (body.confirmPassword !== body.newPassword) {
+                error = 'Mật khẩu xác nhận không chính xác'
+            }
+            if (error.length > 0) {
+                res.render('./Pages/editaccount', {
+                    user: userTDTU,
+                    errorMessage: error
+                })
+            } else {
+                UserTDT.findOneAndUpdate({ authId: userTDTU.authId }, { $set: { password: body.newPassword } }, { new: true }, (err, doc) => {
+
+                    if (err) {
+                        console.log("Something wrong when updating data!");
+                    }
+                    success = 'Đổi mật khẩu thành công'
+                    res.render('./Pages/editaccount', { user: userTDTU, successMessage: success })
+
+                });
+
+            }
+        })
+
+})
+router.post('/editaccountByAdmin', isLoggedIn, (req, res) => {
+    const body = req.body
+    UserTDT.findOne({ authId: body.authId })
+        .then(user => {
+            let error = '';
+            if (body.password != user.password) {
+                error = 'Mật khẩu cũ không chính xác'
+            } else if (!body.newPassword) {
+                error = 'Mật khẩu mới không được bỏ trống'
+            } else if (body.newPassword === body.password) {
+                error = 'Mật khẩu mới không được trùng'
+            } else if (body.newPassword.length < 6) {
+                error = 'Mật khẩu mới phải dài hơn 6 kí tự'
+            } else if (!body.confirmPassword) {
+                error = 'Nhập xác nhận mật khẩu'
+            } else if (body.confirmPassword !== body.newPassword) {
+                error = 'Mật khẩu xác nhận không chính xác'
+            }
+            if (error.length > 0) {
+                body.error = error
+                alert(error)
+                res.send(req.body)
+
+            } else {
+                UserTDT.findOneAndUpdate({ authId: body.authId }, { $set: { password: body.newPassword } }, { new: true }, (err, doc) => {
+
+                });
+                let success = "Đổi mật khẩu thành công"
+                alert(success)
+                res.send(req.body)
+            }
+        })
+})
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated() || temp === true)
