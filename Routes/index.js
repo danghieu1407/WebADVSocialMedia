@@ -39,12 +39,15 @@ router.use(bodyParser.json())
 var UserTDT = require('../Models/UserModel')
 var Post = require('../Models/Post');
 var Comment = require('../Models/Comment');
+var Notification = require('../Models/nontification')
 const { start } = require('repl');
 const { Passport } = require('passport');
 const e = require('express');
 
 let userTDTU; /* Biến Local để lấy thông tin sinh viên cho cột left - right */
 let post; /*Lấy tất cả bài post trong moongose */
+let skip;
+let tempcc;
 
 
 // Quài Bẻo thêm dô từ khúc này
@@ -72,7 +75,7 @@ router.get('/login', (req, res, next) => {
         })
 })
 temp = false
-let tempcc;
+
 
 
 
@@ -118,11 +121,6 @@ router.post('/login', (req, res, next) => {
             }
         })
 })
-
-
-
-
-let skip;
 router.get('/', isLoggedIn, (req, res, next) => {
     // res.sendFile(__dirname + "/Pages/index");
     skip = 10;
@@ -151,6 +149,8 @@ router.get('/', isLoggedIn, (req, res, next) => {
 });
 
 
+
+
 router.post('/', isLoggedIn, (req, res, next) => {
     new Post({
         creator: userTDTU.authId,
@@ -169,9 +169,22 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 });
 
+router.post('/nontification', (req, res) => {
+    console.log(req.body)
+    new Notification({
+        creator: userTDTU.role,
+        content: req.body.msg,
+        title: req.body.title,
+        create_at: new Date(),
+        update_at: new Date(),
+    }).save(function(err, data) {
+        if (err) return console.error(err);
 
+        result = { post: data, user: userTDTU };
+        res.send(result);
+    })
+});
 router.get('/logout', function(req, res, next) {
-
     if (req.session) {
         // delete session object
         req.session.destroy(function(err) {
@@ -185,8 +198,6 @@ router.get('/logout', function(req, res, next) {
     }
 
 });
-
-
 router.post('/DeletePost', function(req, res) {
 
     query = { _id: ObjectId((req.body.IDPost)) }
@@ -200,9 +211,6 @@ router.post('/DeletePost', function(req, res) {
         }
     })
 });
-
-
-
 router.post("/EditPost", function(req, res) {
     query = { _id: ObjectId(req.body.IDPost) }
     Post.findOneAndUpdate(query, { $set: { content: req.body.content, update_at: new Date() } }, { new: true }, function(err, result) {
@@ -212,8 +220,6 @@ router.post("/EditPost", function(req, res) {
         }
     })
 })
-
-
 router.get("/UserProfile", isLoggedIn, (req, res, next) => {
     skip = 10
     Post.find({ creator: userTDTU.authId }).sort({ _id: -1 }).limit(10).then((result) => {
@@ -221,10 +227,6 @@ router.get("/UserProfile", isLoggedIn, (req, res, next) => {
     })
 
 });
-
-
-
-
 router.post("/UserProfile", isLoggedIn, (req, res, next) => {
     const { name, Class, Faculty } = req.body;
     query = { authId: req.user.authId };
@@ -301,8 +303,6 @@ router.post('/createaccount', isLoggedIn, (req, res) => {
 
 
 })
-
-
 router.post('/loadComment', (req, res) => {
     Comment.find({ IdOfPost: req.body.IDPost }).sort({ _id: 1 }, ).then((result) => {
         UserTDT.find({}, (err, doc) => {
@@ -314,8 +314,6 @@ router.post('/loadComment', (req, res) => {
         })
     })
 })
-
-
 router.post("/SendComment", (req, res) => {
     new Comment({
         IdOfPost: req.body.IDPost,
@@ -333,7 +331,6 @@ router.post("/SendComment", (req, res) => {
 
     });
 })
-
 router.post("/DeleteComment", function(req, res) {
 
     Comment.findOneAndDelete({ _id: ObjectId(req.body.IDComment) }, function(err, result) {
@@ -343,7 +340,6 @@ router.post("/DeleteComment", function(req, res) {
         }
     })
 })
-
 
 router.get("/PageOfUser", isLoggedIn, (req, res, next) => {
     skip = 10;
@@ -400,6 +396,30 @@ router.post("/LoadMoreEvent", (req, res) => {
                     })
             }
         })
+    }
+})
+
+router.get("/Notification", isLoggedIn, (req, res) => {
+    let page = req.query.Page || 1;
+    let Type = req.query.Type || null;
+    if (Type === null) {
+        Notification.find({}).sort({ _id: -1 }, )
+            .skip((10 * page) - 10)
+            .limit(10)
+            .then((result) => {
+                Notification.countDocuments({}).then((count) => {
+                    res.render('./Pages/Newsofuser', { user: userTDTU, result: result, Pages: Math.ceil(count / 10), page: page, Type: null });
+                })
+            })
+    } else {
+        Notification.find({ creator: Type }).sort({ _id: -1 }, )
+            .skip((10 * page) - 10)
+            .limit(10)
+            .then((result) => {
+                Notification.countDocuments({ creator: Type }).then((count) => {
+                    res.render('./Pages/Newsofuser', { user: userTDTU, result: result, Pages: Math.ceil(count / 10), page: page, Type: Type });
+                })
+            })
     }
 
 })
@@ -545,11 +565,31 @@ router.post('/editaccountByAdmin', isLoggedIn, (req, res) => {
             }
         })
 })
+router.get("/fakerdata", (req, res) => {
+    for (let i = 11; i <= 20; i++) {
+        new Notification({
+            content: "Day la notification " + i,
+            title: "Day la title " + i,
+            creator: "Law",
+            create_at: new Date(),
+            update_at: new Date(),
+        }).save(function(err, data) {
+            if (err) return console.error(err);
+            result = { post: data };
+            console.log(JSON.stringify(result));
+        });
+    }
+})
+
+router.get('/DELETEALL', function(req, res) {
+    Notification.deleteMany({}, function(err, result) {});
+});
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated() || temp === true)
         return next();
     res.redirect('/login');
 }
+
 
 module.exports = router;

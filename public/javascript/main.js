@@ -36,35 +36,55 @@ $(document).ready(function() {
 
 });
 
-/*
-$(document).ready(function() {
-    $.ajax({
-        url: "/loadmore",
-        method: 'GET',
-        contentType: 'application/json',
-        success: function(data) {
+// socketio process
+// $(document).ready(function () {
 
-            let content = data.post.content;
-            let name = data.user.name;
-            let avatar = data.user.avatar;
-            console.log(data);
-            for (var i = 0; i < data.post.length; i++) {
-                let olddiv = document.querySelector('.box1');
-                let newdiv = olddiv.cloneNode(true);
-                let list = document.getElementById('CollectionDiv');
-                list.insertBefore(newdiv, list.childNodes[0]);
-                newDiv.querySelector('.name').innerHTML = name;
-                newDiv.querySelector('.content').innerHTML = content;
-                newdiv.querySelector('.avt').scr = avatar;
-                document.getElementsByClassName("box1")[0].id = data.post._id;
-                $('#CollectionDiv').append(newdiv)
-            }
+// })
 
-        }
-    })
-})
-*/
+// window.onload = ()=>{
+//     console.log('Mở kết nối tới sever')
+//     alert("runing")
+//     const socket = io('http://localhost:3000');
 
+//     socket.on('connect', ()=>{console.log('đã kết nối thành công')
+//     })
+//     socket.on('disconnect', ()=>{console.log('đã kết nối thất bại')
+//     socket.on('message',m=> {console.log(`đã nhận một tin nhắn:${m}`)})
+
+//     socket.on('sendatatouser', data =>{
+//         console.log(data)
+//     })
+//     let formCreateNoti = document.getElementById('msgForm')
+//     console.log(formCreateNoti)
+//     formCreateNoti.onsubmit = (e) =>{
+//         e.preventDefault()
+//         alert("run")
+//     }
+// $('#msgForm').on("submit", function (event) {
+//     console.log('chaysocket')
+//     event.preventDefault();
+//     let msg = document.getElementById('msg').value
+//     $.ajax({
+//         url: "/nontification",
+//         type: "POST",
+//         data:{
+//             msg: msg
+//         },
+//         success: function (response) {
+//             socket.emit('postnontification', response.post)
+
+//         }
+//     })
+// })
+
+// })
+// }
+
+
+function appendMessages(message) {
+    const html = `<div>${message}</div>`
+    messages.innerHTML += html
+}
 
 /**Xóa Bài Viết */
 
@@ -285,6 +305,98 @@ $(document).ready(function() {
         }
     });
 
+})
+
+$(document).ready(function() {
+    $("body").on("click", ".OpenDetailNotification", (event) => {
+        event.preventDefault();
+        let content = $(event.target).data("content");
+        let title = $(event.target).data("title");
+
+        $("#TitleNotification").html(title);
+        $(".ContentNotification").html(content);
+        $("#DetailNotification").modal("show");
+    })
+})
+
+$(document).ready(function() {
+    function getNameFaculy(data) {
+        if (data == "BHLD") {
+            return "Bảo Hộ Lao Động";
+        } else if (data == "PCTHSSV") {
+            return "Phòng Công Tác Học Sinh Sinh Viên";
+        } else if (data == "PDH") {
+            return "Phòng Đại Học"
+        } else if (data == "PSDH") {
+            return "Phòng Sau Đại Học"
+        } else if (data == "ĐTVMT") {
+            return "Phòng điện toán và máy tính"
+        } else if (data == "TDTUEnglish") {
+            return "TDT Creative Language Center"
+        } else if (data == "TTTH") {
+            return "Trung Tâm Tin Học"
+        } else if (data == "SDTC") {
+            return "Trung tâm đào tạo phát triển xã hội "
+        } else if (data == "TCNH") {
+            return "Trung tâm đào tạo phát triển xã hội "
+        } else {
+            return "Không xác định"
+        }
+    }
+})
+
+
+$(document).ready(function() {
+
+    $("#OpenModalPostNotification").on("click", (event) => {
+        event.preventDefault();
+        $("#PostNotification").modal("show");
+    })
+
+
+
+    console.log('Mở kết nối tới sever')
+    const socket = io('http://localhost:3000');
+
+    socket.on('connect', () => {
+        console.log('đã kết nối thành công')
+    })
+    let formCreateNoti = document.getElementById('PostNotificationForm')
+    console.log(formCreateNoti)
+    $("#PostNotificationForm").on("submit", (event) => {
+        event.preventDefault()
+        let Creator = document.getElementById('Creator').value
+        let title = document.getElementById('title').value
+        let msg = document.getElementById('msg').value
+        $("#PostNotification").modal("hide");
+        $.ajax({
+            url: "/nontification",
+            type: "POST",
+            data: {
+                Creator: Creator,
+                title: title,
+                msg: msg
+            },
+            success: function(response) {
+                socket.emit('postnontification', response.post)
+                console.log(response)
+
+                // console.log(notiMain)
+
+                // $('#PostNotificationForm')[0].reset();
+
+            }
+        })
+
+    })
+    let notiMain = document.getElementById('messages')
+    socket.on('sendatatouser', data => {
+        console.log(data)
+        notiMain.innerHTML = `<div id="snackbar">${data.creator}: ${data.title}</div>
+        `
+
+
+    })
 })
 
 /*Xóa tài khoản*/
