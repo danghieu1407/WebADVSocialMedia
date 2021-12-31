@@ -10,7 +10,42 @@ body {
     font-family: 'Baloo 2', cursive;
     background-color: #efefef !important;
 }
+.box1{
+    border: solid 1px #17A2B8;
+   
+    
+}
 
+hr {
+    size: 10px;
+    width:100%;
+    height:100%;
+    color:black;
+    font-weight:bold;
+    animation: myanimation 5s infinite;
+  }
+  
+  @keyframes myanimation {
+    /* 0% {background-color: red;}
+    25%{background-color:yellow;}
+    50%{background-color:green;}
+    75%{background-color:brown;}
+    100% {background-color: red;} */
+    0% {background-color: red;}
+    10% {background-color: rgb(255, 102, 0);}
+    20% {background-color: rgb(255, 238, 0);}
+    30% {background-color: rgb(102, 255, 0);}
+    40% {background-color: rgb(0, 255, 42);}
+    50% {background-color: rgb(0, 255, 234);}
+    60% {background-color: rgb(0, 153, 255);}
+    70% {background-color: rgb(25, 0, 255);}
+    80% {background-color: rgb(132, 0, 255);}
+    90% {background-color: rgb(225, 0, 255);}
+    100% {background-color: red;}
+    
+
+
+  }
 .select1 {
     width: 100%;
     border: 1px solid #ced4da;
@@ -21,6 +56,10 @@ body {
     align-items: center;
 }
 
+#googlelogin{
+    color: mintcream;
+    text-decoration: none;
+}
 
 #btn-create {
     width: 100%;
@@ -363,4 +402,78 @@ p.item {
   }
 
 
+  .btn-7 {
+    background: linear-gradient(0deg, rgb(26, 238, 253) 0%, #17A2B8);
+      line-height: 42px;
+      padding: 0;
+      border: none;
+      border-radius: 7px;
+      color: azure;
+    }
+    .btn-7  {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .btn-7:before,
+    .btn-7:after {
+      position: absolute;
+      content: "";
+      right: 0;
+      bottom: 0;
+      background: #17A2B8;
+      box-shadow:
+       -7px -7px 20px 0px rgba(255,255,255,.9),
+       -4px -4px 5px 0px rgba(255,255,255,.9),
+       7px 7px 20px 0px rgba(0,0,0,.2),
+       4px 4px 5px 0px rgba(0,0,0,.3);
+      transition: all 0.3s ease;
+    }
+    .btn-7:before{
+       height: 0%;
+       width: 2px;
+    }
+    .btn-7:after {
+      width: 0%;
+      height: 2px;
+    }
+    .btn-7:hover{
+      color: (0deg, rgb(124, 246, 255) 0%, #5ec8d8);
+      background: aqua;
+    }
+    .btn-7:hover:before {
+      height: 100%;
+    }
+    .btn-7:hover:after {
+      width: 100%;
+    }
+    .btn-7 :before,
+    .btn-7 :after {
+      position: absolute;
+      content: "";
+      left: 0;
+      top: 0;
+      background: rgba(251,75,2,1);
+      box-shadow:
+       -7px -7px 20px 0px rgba(255,255,255,.9),
+       -4px -4px 5px 0px rgba(255,255,255,.9),
+       7px 7px 20px 0px rgba(0,0,0,.2),
+       4px 4px 5px 0px rgba(0,0,0,.3);
+      transition: all 0.3s ease;
+    }
+    .btn-7 :before {
+      width: 2px;
+      height: 0%;
+    }
+    .btn-7 :after {
+      height: 2px;
+      width: 0%;
+    }
+    .btn-7 :hover:before {
+      height: 100%;
+    }
+    .btn-7 :hover:after {
+      width: 100%;
+    }
   
