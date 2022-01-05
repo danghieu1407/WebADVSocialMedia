@@ -1,24 +1,15 @@
-// const mongoose = require('mongoose')
-// const connectionString = "mongodb+srv://danghieu1407:hieu0947072684@cluster0.ga1ro.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-// if (!connectionString){
-//     console.error('MongoDB connection string missing!')
-//     process.exit(1)
-// }
+const mongoose = require('mongoose')
+const connectionString = "mongodb+srv://danghieu1407:hieu0947072684@cluster0.ga1ro.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+if (!connectionString){
+    console.error('MongoDB connection string missing!')
+    process.exit(1)
+}
 
-// mongoose.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true})
-// const db = mongoose.connection
-// db.on('error', err => {
-//     console.error('MongooseDB error: ' +err.message)
-// })
+mongoose.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true})
+const db = mongoose.connection
+db.on('error', err => {
+    console.error('MongooseDB error: ' +err.message)
+})
 
-// db.once('open', () => console.log('MongoDB connection established'))
+db.once('open', () => console.log('MongoDB connection established'))
 
-
-const { MongoClient } = require('mongodb');
-const uri = "mongodb+srv://danghieu1407:hieu0947072684@cluster0.ga1ro.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
