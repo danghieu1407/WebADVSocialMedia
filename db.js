@@ -15,7 +15,7 @@
 
 
 const { MongoClient } = require('mongodb');
-const uri = "mongodb+srv://danghieu1407:<password>@cluster0.ga1ro.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const uri = "mongodb+srv://danghieu1407:hieu0947072684@cluster0.ga1ro.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
   const collection = client.db("test").collection("devices");
